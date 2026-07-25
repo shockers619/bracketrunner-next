@@ -256,6 +256,20 @@ button:active { transform: scale(0.98); }
 
 /* Marketing form fields sit lighter than the app's, so they read as inviting
    rather than as disabled wells on a dark card. */
+/* The lead form's container. Deliberately NOT the warm glowing card: a bright
+   orange-tinted surface is louder than the fields sitting on it, so the inputs
+   could never separate no matter how they were tuned. Dark neutral container +
+   light fields is the pairing that reads as a form. */
+.mk-form-card {
+  position: relative;
+  background: linear-gradient(168deg, #16151B 0%, #121116 50%, #0F0E13 100%);
+  border: 1px solid rgba(255, 107, 43, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 46px -20px rgba(255, 107, 43, 0.35),
+    0 22px 48px -20px rgba(0, 0, 0, 0.95);
+}
+
 /* Field styling to spec. !important is used deliberately here: these rules must
    not be silently outranked by the generic `input` rule earlier in this file or
    by any Tailwind utility, which is the failure mode that produced a border of

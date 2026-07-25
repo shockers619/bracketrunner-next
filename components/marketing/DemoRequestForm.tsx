@@ -48,7 +48,11 @@ export default function DemoRequestForm() {
   }
 
   return (
-    <form onSubmit={submit} className="mk-form mk-card mk-card-warm rounded-2xl p-6 sm:p-8">
+    // Neutral dark surface, not the warm glowing card. A bright, orange-tinted
+    // container is visually louder than the fields inside it, so no amount of
+    // tuning the inputs made them separate. Dark container + light fields is
+    // the pairing that actually reads as a form.
+    <form onSubmit={submit} className="mk-form mk-form-card rounded-2xl p-6 sm:p-8">
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Your name" required>
           <input required type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Jordan Reyes" />
