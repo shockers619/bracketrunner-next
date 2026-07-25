@@ -157,12 +157,36 @@ button:active { transform: scale(0.98); }
   background:
     radial-gradient(120% 85% at 0% 0%, rgba(255, 255, 255, 0.062), transparent 58%),
     linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.012));
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  /* Warm border everywhere — the cold grey outline is the single biggest
+     "default developer box" tell. */
+  border: 1px solid rgba(255, 107, 43, 0.15);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.09),
     0 28px 56px -36px rgba(0, 0, 0, 0.95);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
+}
+
+/* Section tags as pill badges, not floating dim text. */
+.mk-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 107, 43, 0.3);
+  background: linear-gradient(180deg, rgba(255, 107, 43, 0.12), rgba(255, 107, 43, 0.03));
+  border-radius: 999px;
+  padding: 5px 13px;
+  box-shadow: inset 0 1px 0 rgba(255, 180, 130, 0.16);
+}
+
+/* Marketing form fields: lighter fills than the app's, warm focus ring. */
+.mk-form input, .mk-form textarea {
+  background: rgba(255, 255, 255, 0.045);
+}
+.mk-form input:focus, .mk-form textarea:focus {
+  border-color: rgba(255, 107, 43, 0.55);
+  background: rgba(255, 107, 43, 0.05);
+  box-shadow: 0 0 0 3px rgba(255, 107, 43, 0.15);
 }
 
 /* Same recipe, warmed — used on the cards that carry the pitch so the grid

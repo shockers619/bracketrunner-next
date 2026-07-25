@@ -45,7 +45,7 @@ function Check() {
 
 export default function ComparisonTable() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/10">
+    <div className="overflow-hidden rounded-2xl border border-ember-500/[0.15] shadow-[0_28px_56px_-36px_rgba(0,0,0,0.95)]">
       {/* Column headers — desktop only; on mobile each card is labelled instead. */}
       <div className="hidden grid-cols-[1.1fr_1.3fr_1.5fr] gap-px bg-white/[0.07] md:grid">
         <div className="bg-obsidian-900 px-6 py-4" />

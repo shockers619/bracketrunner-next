@@ -28,7 +28,7 @@ module.exports = {
         // Warm obsidian, not pure black — a neutral #0B0C10 reads cold and
         // flat under warm accents.
         obsidian: {
-          950: '#0F0E12',
+          950: '#0D0C0E',
           900: '#14131A',
           800: '#1B1922',
           700: '#24222D',

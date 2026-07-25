@@ -7,10 +7,12 @@
 // contrast, emitting status dots, and court tags as proper chips.
 
 function CourtTag({ children, tone = 'neutral' }: { children: React.ReactNode; tone?: 'neutral' | 'live' | 'blue' }) {
+  // High-contrast on purpose — washed-out chips are what make a mockup read
+  // as a wireframe placeholder instead of a live product.
   const tones = {
-    neutral: 'border-white/12 bg-white/[0.06] text-white/60',
-    live: 'border-ember-500/40 bg-ember-500/15 text-ember-300',
-    blue: 'border-electric-500/35 bg-electric-500/12 text-electric-400',
+    neutral: 'border-white/20 bg-white/[0.1] text-white/75',
+    live: 'border-ember-500/60 bg-ember-500/25 text-ember-300 shadow-[0_0_14px_-4px_rgba(255,107,43,0.7)]',
+    blue: 'border-electric-500/50 bg-electric-500/20 text-electric-400',
   }
   return (
     <span className={`rounded-md border px-2 py-[3px] font-mono text-[9.5px] font-semibold uppercase tracking-[0.1em] ${tones[tone]}`}>
@@ -44,7 +46,7 @@ function ScoreRow({ team, score, seed, leading, blue }: {
 
 function Phone() {
   return (
-    <div className="relative w-[262px] shrink-0 rounded-[2.4rem] border border-white/[0.16] bg-gradient-to-b from-obsidian-700 via-obsidian-800 to-obsidian-900 p-[9px] shadow-[0_50px_90px_-30px_rgba(0,0,0,1),0_0_0_1px_rgba(255,255,255,0.04)]">
+    <div className="relative w-[262px] shrink-0 rounded-[2.4rem] border border-white/[0.16] bg-gradient-to-b from-obsidian-700 via-obsidian-800 to-obsidian-900 p-[9px] shadow-[0_50px_90px_-30px_rgba(0,0,0,1),0_0_70px_-16px_rgba(255,107,43,0.35),0_0_0_1px_rgba(255,255,255,0.05)]">
       <div className="overflow-hidden rounded-[1.95rem] border border-white/[0.06] bg-obsidian-950">
         <div className="flex items-center justify-between px-5 pb-1.5 pt-3 font-mono text-[10px] font-medium text-white/55">
           <span>9:41</span>

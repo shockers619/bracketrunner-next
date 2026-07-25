@@ -48,7 +48,7 @@ export default function DemoRequestForm() {
   }
 
   return (
-    <form onSubmit={submit} className="mk-glass rounded-2xl p-6 sm:p-8">
+    <form onSubmit={submit} className="mk-form mk-card mk-card-warm rounded-2xl p-6 sm:p-8">
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Your name" required>
           <input required value={name} onChange={e => setName(e.target.value)} placeholder="Jordan Reyes" />
@@ -104,7 +104,7 @@ export default function DemoRequestForm() {
       <button
         type="submit"
         disabled={status === 'sending'}
-        className="mt-6 w-full mk-glow rounded-xl bg-ember-500 px-6 py-4 text-[15px] font-bold text-obsidian-950 transition-opacity disabled:opacity-50"
+        className="mt-6 w-full mk-glow rounded-xl bg-ember-500 px-6 py-4 text-[15px] font-bold text-obsidian-950 transition-all duration-150 hover:-translate-y-0.5 hover:bg-ember-400 disabled:opacity-50"
       >
         {status === 'sending' ? 'Sending…' : 'Send this over'}
       </button>

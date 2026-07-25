@@ -12,6 +12,27 @@ export const metadata: Metadata = {
     'Showcases, pool play, or championship brackets — hand us your team list and venue rules. We build your entire event by hand and deliver a live, courtside-ready platform for directors, coaches, and parents.',
 }
 
+/** Section tag as a styled pill, not floating dim text — every section opener
+ *  gets a warm visual anchor. */
+function Eyebrow({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="mk-pill font-mono text-[10.5px] font-semibold uppercase tracking-[0.16em] text-copper-200">
+      <span className="mk-dot-live h-1 w-1 rounded-full bg-ember-500" />
+      {children}
+    </span>
+  )
+}
+
+/** Warm gradient accent for key headline words — kills the white-on-dark
+ *  monotony section by section. */
+function Accent({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="bg-gradient-to-r from-copper-200 via-ember-300 to-ember-500 bg-clip-text text-transparent">
+      {children}
+    </span>
+  )
+}
+
 function Step({ n, title, body }: { n: string; title: string; body: string }) {
   return (
     <div className="flex gap-5">
@@ -118,9 +139,9 @@ export default function LandingPage() {
       {/* ---- Us vs. them ---- */}
       <section className="border-b border-white/[0.07] px-5 py-14 sm:px-8 sm:py-[4.5rem]">
         <div className="mx-auto max-w-6xl">
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-copper-300">The difference</p>
-          <h2 className="mt-3 max-w-3xl text-[1.9rem] font-extrabold leading-tight tracking-[-0.03em] sm:text-[2.6rem]">
-            Built for live game days, not corporate software demos.
+          <Eyebrow>The difference</Eyebrow>
+          <h2 className="mt-4 max-w-3xl text-[1.9rem] font-extrabold leading-tight tracking-[-0.03em] sm:text-[2.6rem]">
+            Built for <Accent>live game days</Accent>, not corporate software demos.
           </h2>
           <div className="mt-10">
             <ComparisonTable />
@@ -132,9 +153,9 @@ export default function LandingPage() {
       <section className="border-b border-white/[0.07] px-5 py-14 sm:px-8 sm:py-[4.5rem]">
         <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1fr_1.05fr] lg:gap-16">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-copper-300">How it works</p>
-            <h2 className="mt-3 text-[1.9rem] font-extrabold leading-tight tracking-[-0.03em] sm:text-[2.6rem]">
-              You hand it over. We do the rest.
+            <Eyebrow>How it works</Eyebrow>
+            <h2 className="mt-4 text-[1.9rem] font-extrabold leading-tight tracking-[-0.03em] sm:text-[2.6rem]">
+              You hand it over. <Accent>We do the rest.</Accent>
             </h2>
             <p className="mt-5 text-[16px] leading-[1.65] text-white/55">
               No settings to learn, no templates to wrestle into shape. The whole point is that you don&apos;t
@@ -164,9 +185,9 @@ export default function LandingPage() {
       {/* ---- Bento ---- */}
       <section className="border-b border-white/[0.07] px-5 py-14 sm:px-8 sm:py-[4.5rem]">
         <div className="mx-auto max-w-6xl">
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-copper-300">A complete event engine</p>
-          <h2 className="mt-3 max-w-3xl text-[1.9rem] font-extrabold leading-tight tracking-[-0.03em] sm:text-[2.6rem]">
-            Not a bracket calculator.
+          <Eyebrow>A complete event engine</Eyebrow>
+          <h2 className="mt-4 max-w-3xl text-[1.9rem] font-extrabold leading-tight tracking-[-0.03em] sm:text-[2.6rem]">
+            Not a <Accent>bracket calculator.</Accent>
           </h2>
 
           <div className="mt-10 grid gap-4 md:grid-cols-3">
@@ -222,12 +243,12 @@ export default function LandingPage() {
 
       {/* ---- Demo request ---- */}
       <section id="demo" className="mk-grid relative scroll-mt-20 overflow-hidden px-5 py-14 sm:px-8 sm:py-[4.5rem]">
-        <div className="pointer-events-none absolute left-1/2 top-0 h-72 w-[34rem] -translate-x-1/2 rounded-full bg-ember-500/[0.06] blur-[110px]" />
+        <div className="mk-bloom pointer-events-none absolute left-1/2 top-0 h-[26rem] w-[42rem] -translate-x-1/2" />
         <div className="relative mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-copper-300">Get started</p>
-            <h2 className="mt-3 text-[1.9rem] font-extrabold leading-tight tracking-[-0.03em] sm:text-[2.6rem]">
-              Tell us about your event.
+            <Eyebrow>Get started</Eyebrow>
+            <h2 className="mt-4 text-[1.9rem] font-extrabold leading-tight tracking-[-0.03em] sm:text-[2.6rem]">
+              Tell us about <Accent>your event.</Accent>
             </h2>
             <p className="mt-5 text-[16px] leading-[1.65] text-white/60">
               We&apos;ll show you what your tournament would actually look like — built from your real teams,
