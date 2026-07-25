@@ -1,20 +1,40 @@
-// The product, anchored in the hero. Deliberately shows TWO views side by side:
-// the courtside schedule a parent opens, and the bracket tree — because the
-// pitch is "complete event engine", and a phone alone would read as a bracket app.
+// The product, anchored in the hero. Shows BOTH views — the courtside schedule
+// a parent opens and the bracket a director runs — because one phone alone
+// reads as a bracket app.
+//
+// Fidelity matters more than anything else on this page: these mockups have to
+// look like a live broadcast product, not grey wireframe boxes. That means real
+// contrast, emitting status dots, and court tags as proper chips.
 
-function ScoreRow({ team, score, leading, blue }: { team: string; score: string; leading?: boolean; blue?: boolean }) {
+function CourtTag({ children, tone = 'neutral' }: { children: React.ReactNode; tone?: 'neutral' | 'live' | 'blue' }) {
+  const tones = {
+    neutral: 'border-white/12 bg-white/[0.06] text-white/60',
+    live: 'border-ember-500/40 bg-ember-500/15 text-ember-300',
+    blue: 'border-electric-500/35 bg-electric-500/12 text-electric-400',
+  }
   return (
-    <div className={`flex items-center justify-between gap-3 px-3.5 py-2.5 ${leading ? 'bg-white/[0.05]' : ''}`}>
+    <span className={`rounded-md border px-2 py-[3px] font-mono text-[9.5px] font-semibold uppercase tracking-[0.1em] ${tones[tone]}`}>
+      {children}
+    </span>
+  )
+}
+
+function ScoreRow({ team, score, seed, leading, blue }: {
+  team: string; score: string; seed: string; leading?: boolean; blue?: boolean
+}) {
+  return (
+    <div className={`flex items-center justify-between gap-2.5 px-3 py-2.5 ${leading ? 'bg-white/[0.07]' : ''}`}>
       <div className="flex min-w-0 flex-1 items-center gap-2.5">
-        <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg text-[11px] font-bold text-obsidian-950 ${
-          blue ? 'bg-gradient-to-br from-sky-300 to-sky-600' : 'bg-gradient-to-br from-copper-200 to-copper-500'
+        <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg text-[11px] font-extrabold text-obsidian-950 shadow-lg ${
+          blue ? 'bg-gradient-to-br from-sky-200 to-sky-500' : 'bg-gradient-to-br from-copper-200 to-copper-400'
         }`}>
           {team[0]}
         </span>
-        <span className={`truncate text-[14px] ${leading ? 'font-bold text-white' : 'font-medium text-white/75'}`}>{team}</span>
+        <span className="shrink-0 rounded bg-white/10 px-1.5 py-0.5 font-mono text-[9px] font-semibold text-white/55">{seed}</span>
+        <span className={`truncate text-[13.5px] ${leading ? 'font-bold text-white' : 'font-medium text-white/80'}`}>{team}</span>
       </div>
-      <span className={`font-mono text-[19px] font-bold tabular-nums ${
-        leading ? (blue ? 'text-electric-400' : 'text-ember-400') : 'text-white/40'
+      <span className={`font-mono text-[20px] font-extrabold tabular-nums tracking-tight ${
+        leading ? (blue ? 'text-electric-400' : 'text-ember-400') : 'text-white/45'
       }`}>
         {score}
       </span>
@@ -24,44 +44,56 @@ function ScoreRow({ team, score, leading, blue }: { team: string; score: string;
 
 function Phone() {
   return (
-    <div className="relative w-[258px] shrink-0 rounded-[2.3rem] border border-white/[0.14] bg-gradient-to-b from-obsidian-700 to-obsidian-900 p-[8px] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.95)]">
-      <div className="overflow-hidden rounded-[1.85rem] bg-obsidian-950">
-        <div className="flex items-center justify-between px-5 pb-1 pt-3 font-mono text-[10px] text-white/45">
+    <div className="relative w-[262px] shrink-0 rounded-[2.4rem] border border-white/[0.16] bg-gradient-to-b from-obsidian-700 via-obsidian-800 to-obsidian-900 p-[9px] shadow-[0_50px_90px_-30px_rgba(0,0,0,1),0_0_0_1px_rgba(255,255,255,0.04)]">
+      <div className="overflow-hidden rounded-[1.95rem] border border-white/[0.06] bg-obsidian-950">
+        <div className="flex items-center justify-between px-5 pb-1.5 pt-3 font-mono text-[10px] font-medium text-white/55">
           <span>9:41</span>
           <span className="flex items-center gap-1"><span className="tracking-tighter">••••</span> 5G</span>
         </div>
 
-        <div className="border-b border-white/[0.07] px-4 pb-3 pt-1">
-          <p className="text-[15px] font-bold tracking-tight text-white">Spring Classic</p>
-          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-white/40">14U Boys Gold</p>
+        <div className="flex items-center justify-between gap-2 border-b border-white/[0.09] px-4 pb-3 pt-1">
+          <div className="min-w-0">
+            <p className="truncate text-[15px] font-extrabold tracking-tight text-white">Spring Classic</p>
+            <p className="font-mono text-[9.5px] uppercase tracking-[0.12em] text-white/45">14U Boys Gold</p>
+          </div>
+          <span className="flex shrink-0 items-center gap-1.5 rounded-full border border-emerald-400/35 bg-emerald-400/12 px-2 py-[3px] font-mono text-[9px] font-bold uppercase tracking-[0.1em] text-emerald-300">
+            <span className="mk-dot-ok h-1.5 w-1.5 rounded-full bg-emerald-400" />
+            Live
+          </span>
         </div>
 
-        <div className="flex flex-col gap-2.5 p-3">
-          <div className="flex items-center justify-between px-1">
-            <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/40">Now playing</span>
-            <span className="flex items-center gap-1.5 rounded-full border border-ember-500/35 bg-ember-500/10 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-ember-400">
-              <span className="h-1 w-1 animate-pulseLive rounded-full bg-ember-500" />
-              Live
-            </span>
+        <div className="flex flex-col gap-2.5 bg-gradient-to-b from-white/[0.02] to-transparent p-3">
+          <div className="flex items-center justify-between px-0.5">
+            <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.18em] text-white/45">Now playing</span>
+            <span className="font-mono text-[9px] tabular-nums text-white/35">3 courts</span>
           </div>
 
-          <div className="overflow-hidden rounded-xl border border-ember-500/25 bg-gradient-to-b from-ember-500/[0.09] to-white/[0.015]">
-            <div className="border-b border-white/[0.07] px-3.5 py-1.5">
-              <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-white/45">Court 2 · 9:15 AM</span>
+          {/* live game — the hero card, lit */}
+          <div className="overflow-hidden rounded-xl border border-ember-500/35 bg-gradient-to-b from-ember-500/[0.14] to-ember-500/[0.02] shadow-[0_0_28px_-10px_rgba(255,107,43,0.55)]">
+            <div className="flex items-center justify-between border-b border-white/[0.09] px-3 py-2">
+              <CourtTag tone="live">Court 2</CourtTag>
+              <span className="flex items-center gap-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-ember-300">
+                <span className="mk-dot-live h-1.5 w-1.5 rounded-full bg-ember-500" />
+                Q3 · 4:12
+              </span>
             </div>
-            <ScoreRow team="Warriors" score="58" leading />
-            <div className="h-px bg-white/5" />
-            <ScoreRow team="Hawks" score="41" />
+            <ScoreRow team="Warriors" seed="#1" score="58" leading />
+            <div className="h-px bg-white/[0.07]" />
+            <ScoreRow team="Hawks" seed="#8" score="41" />
           </div>
 
-          <span className="px-1 font-mono text-[9px] uppercase tracking-[0.18em] text-white/40">Final</span>
-          <div className="overflow-hidden rounded-xl border border-white/[0.09] bg-white/[0.02]">
-            <div className="border-b border-white/[0.07] px-3.5 py-1.5">
-              <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-electric-400/90">Court 1 · Pool A</span>
+          <div className="flex items-center justify-between px-0.5">
+            <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.18em] text-white/45">Final</span>
+          </div>
+
+          <div className="overflow-hidden rounded-xl border border-white/[0.11] bg-white/[0.035]">
+            <div className="flex items-center justify-between border-b border-white/[0.09] px-3 py-2">
+              <CourtTag>Court 1</CourtTag>
+              <CourtTag tone="blue">Pool A</CourtTag>
             </div>
-            <ScoreRow team="Sixers" score="62" leading blue />
-            <div className="h-px bg-white/5" />
-            <ScoreRow team="Bulls" score="55" />
+            <ScoreRow team="Sixers" seed="#4" score="62" leading blue />
+            <div className="h-px bg-white/[0.07]" />
+            <ScoreRow team="Bulls" seed="#5" score="55" />
           </div>
         </div>
       </div>
@@ -71,30 +103,32 @@ function Phone() {
 
 function BracketPanel() {
   const node = (name: string, score: string, won?: boolean, tbd?: boolean) => (
-    <div className={`flex items-center justify-between gap-3 px-2.5 py-1.5 ${won ? 'bg-white/[0.06]' : ''}`}>
-      <span className={`truncate text-[11px] ${tbd ? 'text-white/25' : won ? 'font-bold text-white' : 'text-white/65'}`}>{name}</span>
-      <span className={`font-mono text-[11px] font-bold tabular-nums ${tbd ? 'text-white/15' : won ? 'text-electric-400' : 'text-white/35'}`}>{score}</span>
+    <div className={`flex items-center justify-between gap-3 px-2.5 py-[7px] ${won ? 'bg-white/[0.08]' : ''}`}>
+      <span className={`truncate text-[11.5px] ${tbd ? 'text-white/30' : won ? 'font-bold text-white' : 'text-white/70'}`}>{name}</span>
+      <span className={`font-mono text-[11.5px] font-extrabold tabular-nums ${tbd ? 'text-white/20' : won ? 'text-electric-400' : 'text-white/40'}`}>{score}</span>
     </div>
   )
-  const card = (a: React.ReactNode, b: React.ReactNode) => (
-    <div className="w-[132px] overflow-hidden rounded-lg border border-white/10 bg-obsidian-900">
-      {a}<div className="h-px bg-white/[0.07]" />{b}
+  const card = (a: React.ReactNode, b: React.ReactNode, lit?: boolean) => (
+    <div className={`w-[134px] overflow-hidden rounded-lg border bg-obsidian-900 ${
+      lit ? 'border-electric-500/30 shadow-[0_0_22px_-12px_rgba(56,189,248,0.7)]' : 'border-white/[0.11]'
+    }`}>
+      {a}<div className="h-px bg-white/[0.08]" />{b}
     </div>
   )
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 backdrop-blur-sm">
-      <div className="mb-4 flex items-center justify-between">
-        <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/40">Bracket · 14U Gold</span>
-        <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-copper-300">Pool → bracket</span>
+    <div className="mk-card rounded-2xl p-5">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.18em] text-white/45">Bracket · 14U Gold</span>
+        <CourtTag tone="blue">Pool → bracket</CourtTag>
       </div>
       <div className="relative flex items-center gap-9">
         <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible" aria-hidden="true">
-          <path d="M132 32 C 152 32, 152 74, 169 74" fill="none" stroke="rgba(56,189,248,0.5)" strokeWidth="1.5" />
-          <path d="M132 116 C 152 116, 152 74, 169 74" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="1.5" />
+          <path d="M134 31 C 155 31, 155 73, 172 73" fill="none" stroke="rgba(56,189,248,0.65)" strokeWidth="1.75" />
+          <path d="M134 115 C 155 115, 155 73, 172 73" fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="1.75" />
         </svg>
         <div className="flex flex-col gap-9">
-          {card(node('Sixers', '62', true), node('Bulls', '55'))}
+          {card(node('Sixers', '62', true), node('Bulls', '55'), true)}
           {card(node('Warriors', '—', false, true), node('Hawks', '—', false, true))}
         </div>
         <div className="flex flex-col">
@@ -106,15 +140,13 @@ function BracketPanel() {
 }
 
 function Caption({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="mt-4 text-center font-mono text-[10px] uppercase tracking-[0.16em] text-white/35">{children}</p>
-  )
+  return <p className="mt-4 text-center font-mono text-[10px] uppercase tracking-[0.16em] text-copper-300/70">{children}</p>
 }
 
 export default function PhoneShowcase() {
   return (
     <div className="relative">
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[18rem] w-[26rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-ember-500/[0.05] blur-[90px]" />
+      <div className="mk-bloom pointer-events-none absolute left-1/2 top-1/2 h-[24rem] w-[38rem] -translate-x-1/2 -translate-y-1/2" />
       <div className="relative flex flex-wrap items-start justify-center gap-8 sm:gap-12">
         <div>
           <Phone />

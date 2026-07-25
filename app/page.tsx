@@ -24,15 +24,16 @@ function Step({ n, title, body }: { n: string; title: string; body: string }) {
   )
 }
 
-/** Bento tile. `wide` spans two columns so the grid reads composed rather than
- *  as three identical boxes. */
-function Bento({ title, body, wide, children }: {
-  title: string; body: string; wide?: boolean; children: React.ReactNode
+/** Bento tile. `wide` spans two columns and `warm` gets the ember-tinted glass
+ *  treatment, so the grid reads composed and lit rather than as identical
+ *  monochrome boxes. */
+function Bento({ title, body, wide, warm, children }: {
+  title: string; body: string; wide?: boolean; warm?: boolean; children: React.ReactNode
 }) {
   return (
-    <div className={`flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.022] p-6 ${wide ? 'md:col-span-2' : ''}`}>
+    <div className={`mk-card ${warm ? 'mk-card-warm' : ''} flex flex-col overflow-hidden rounded-2xl p-6 ${wide ? 'md:col-span-2' : ''}`}>
       <h3 className="text-[1.05rem] font-bold tracking-tight text-white">{title}</h3>
-      <p className="mt-2 max-w-lg text-[14.5px] leading-[1.6] text-white/55">{body}</p>
+      <p className="mt-2 max-w-lg text-[14.5px] leading-[1.6] text-white/60">{body}</p>
       <div className="mt-5 flex flex-1 items-end">{children}</div>
     </div>
   )
@@ -62,17 +63,25 @@ export default function LandingPage() {
       <section className="mk-grid relative overflow-hidden border-b border-white/[0.07]">
         {/* Tight and low-opacity on purpose: a wide warm bloom tints the
             obsidian brown, which is the look this palette is correcting. */}
-        <div className="pointer-events-none absolute left-1/2 top-[-18rem] h-[26rem] w-[34rem] -translate-x-1/2 rounded-full bg-ember-500/[0.07] blur-[120px]" />
-        <div className="relative mx-auto max-w-6xl px-5 pb-16 pt-14 text-center sm:px-8 sm:pb-20 sm:pt-20">
-          <span className="inline-flex items-center gap-2 rounded-full border border-copper-400/25 bg-copper-400/[0.07] px-3.5 py-1.5 text-[12px] font-medium text-copper-200">
-            <span className="h-1.5 w-1.5 animate-pulseLive rounded-full bg-ember-500" />
+        <div className="mk-bloom pointer-events-none absolute left-1/2 top-[-16rem] h-[34rem] w-[46rem] -translate-x-1/2" />
+        <div className="relative mx-auto max-w-6xl px-5 pb-14 pt-12 text-center sm:px-8 sm:pb-16 sm:pt-16">
+          {/* Warm badge — one of the few places the "made by people" claim gets
+              a visual signature rather than just words. */}
+          <span className="inline-flex items-center gap-2.5 rounded-full border border-ember-500/30 bg-gradient-to-b from-ember-500/[0.16] to-ember-500/[0.04] px-4 py-1.5 text-[12.5px] font-semibold text-copper-200 shadow-[inset_0_1px_0_rgba(255,180,130,0.25),0_0_28px_-14px_rgba(255,107,43,0.9)]">
+            <span className="mk-dot-live h-1.5 w-1.5 animate-pulseLive rounded-full bg-ember-500" />
             Run by people, not a portal
           </span>
 
-          <h1 className="mx-auto mt-6 max-w-4xl text-[2.5rem] font-extrabold leading-[1.05] tracking-[-0.035em] sm:text-[3.9rem]">
+          <h1 className="mx-auto mt-7 max-w-4xl text-[2.5rem] font-extrabold leading-[1.06] tracking-[-0.035em] sm:text-[3.9rem]">
             Flawless event schedules &amp; live scores.{' '}
-            <span className="bg-gradient-to-r from-copper-200 via-ember-400 to-ember-600 bg-clip-text text-transparent">
-              Handcrafted for you.
+            {/* Two spans on purpose: .mk-underline paints a background-image,
+                which would otherwise be the SAME property bg-clip-text uses to
+                fill the glyphs — combining them on one element makes the text
+                vanish. Outer draws the stroke, inner draws the gradient text. */}
+            <span className="mk-underline">
+              <span className="bg-gradient-to-r from-copper-200 via-ember-300 to-ember-500 bg-clip-text text-transparent">
+                Handcrafted for you.
+              </span>
             </span>
           </h1>
 
@@ -107,7 +116,7 @@ export default function LandingPage() {
       </section>
 
       {/* ---- Us vs. them ---- */}
-      <section className="border-b border-white/[0.07] px-5 py-16 sm:px-8 sm:py-20">
+      <section className="border-b border-white/[0.07] px-5 py-14 sm:px-8 sm:py-[4.5rem]">
         <div className="mx-auto max-w-6xl">
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-copper-300">The difference</p>
           <h2 className="mt-3 max-w-3xl text-[1.9rem] font-extrabold leading-tight tracking-[-0.03em] sm:text-[2.6rem]">
@@ -120,7 +129,7 @@ export default function LandingPage() {
       </section>
 
       {/* ---- How it works ---- */}
-      <section className="border-b border-white/[0.07] px-5 py-16 sm:px-8 sm:py-20">
+      <section className="border-b border-white/[0.07] px-5 py-14 sm:px-8 sm:py-[4.5rem]">
         <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1fr_1.05fr] lg:gap-16">
           <div>
             <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-copper-300">How it works</p>
@@ -153,7 +162,7 @@ export default function LandingPage() {
       </section>
 
       {/* ---- Bento ---- */}
-      <section className="border-b border-white/[0.07] px-5 py-16 sm:px-8 sm:py-20">
+      <section className="border-b border-white/[0.07] px-5 py-14 sm:px-8 sm:py-[4.5rem]">
         <div className="mx-auto max-w-6xl">
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-copper-300">A complete event engine</p>
           <h2 className="mt-3 max-w-3xl text-[1.9rem] font-extrabold leading-tight tracking-[-0.03em] sm:text-[2.6rem]">
@@ -162,7 +171,7 @@ export default function LandingPage() {
 
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             <Bento
-              wide
+              wide warm
               title="Every format a real weekend throws at you."
               body="Showcases, round robins, pool play into bracket, single and double elimination — including the odd team counts that break other tools — plus multi-venue events and custom game guarantees."
             >
@@ -192,7 +201,7 @@ export default function LandingPage() {
             </Bento>
 
             <Bento
-              wide
+              wide warm
               title="Checked by a person before anyone sees it."
               body="Every event is built and verified by hand. You get a walkthrough before it goes public, and someone reachable while it runs."
             >
@@ -212,7 +221,7 @@ export default function LandingPage() {
       </section>
 
       {/* ---- Demo request ---- */}
-      <section id="demo" className="mk-grid relative scroll-mt-20 overflow-hidden px-5 py-16 sm:px-8 sm:py-20">
+      <section id="demo" className="mk-grid relative scroll-mt-20 overflow-hidden px-5 py-14 sm:px-8 sm:py-[4.5rem]">
         <div className="pointer-events-none absolute left-1/2 top-0 h-72 w-[34rem] -translate-x-1/2 rounded-full bg-ember-500/[0.06] blur-[110px]" />
         <div className="relative mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
           <div>

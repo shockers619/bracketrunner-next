@@ -148,21 +148,65 @@ button:active { transform: scale(0.98); }
   mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 78%);
 }
 
-/* Glassmorphism card: a hairline top highlight is what sells the "pane of
-   glass" read — without it the border looks drawn on rather than lit. */
-.mk-glass {
+/* Card with real depth. A flat rgba fill plus a uniform border is exactly what
+   makes a dark UI read as a wireframe — so every card gets three things: a
+   corner-lit radial, a hairline top highlight (sells "pane of glass"), and a
+   cast shadow that separates it from the ground. */
+.mk-card {
+  position: relative;
+  background:
+    radial-gradient(120% 85% at 0% 0%, rgba(255, 255, 255, 0.062), transparent 58%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.012));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 28px 56px -36px rgba(0, 0, 0, 0.95);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+/* Same recipe, warmed — used on the cards that carry the pitch so the grid
+   isn't monochrome. */
+.mk-card-warm {
+  border-color: rgba(255, 107, 43, 0.2);
+  background:
+    radial-gradient(120% 85% at 0% 0%, rgba(255, 107, 43, 0.11), transparent 60%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.012));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 172, 122, 0.17),
+    0 0 44px -22px rgba(255, 107, 43, 0.45),
+    0 28px 56px -36px rgba(0, 0, 0, 0.95);
+}
+
+.mk-glass { /* kept as an alias so existing usages stay styled */
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015));
   border: 1px solid rgba(255, 255, 255, 0.09);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 20px 50px -30px rgba(0, 0, 0, 0.9);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 20px 50px -30px rgba(0, 0, 0, 0.9);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
 }
 
-/* Ember glow for live/primary elements. */
+/* Warm ambient bloom placed behind sections so the page isn't uniformly dark. */
+.mk-bloom {
+  background: radial-gradient(closest-side, rgba(255, 107, 43, 0.16), transparent);
+}
+
+/* Status dots that actually emit light rather than being flat circles. */
+.mk-dot-live { box-shadow: 0 0 10px 1px rgba(255, 107, 43, 0.9); }
+.mk-dot-ok { box-shadow: 0 0 10px 1px rgba(52, 211, 153, 0.85); }
+
+/* Warm accent stroke under key headline words — the "custom-made" tell. */
+.mk-underline {
+  background-image: linear-gradient(90deg, rgba(255, 107, 43, 0), rgba(255, 107, 43, 0.95) 14%, rgba(255, 178, 122, 0.95) 86%, rgba(255, 107, 43, 0));
+  background-repeat: no-repeat;
+  background-size: 100% 3px;
+  background-position: 0 100%;
+  padding-bottom: 8px;
+}
+
+/* Ember glow for primary buttons. */
 .mk-glow {
-  box-shadow: 0 0 0 1px rgba(255, 85, 0, 0.28), 0 14px 44px -12px rgba(255, 85, 0, 0.5);
+  box-shadow: 0 0 0 1px rgba(255, 107, 43, 0.35), 0 16px 44px -12px rgba(255, 107, 43, 0.6);
 }
 
 /* ---- Intake wizard layout (responsive) ----

@@ -25,11 +25,13 @@ module.exports = {
         },
         // Marketing surface: obsidian ground + a hotter, glowing ember accent
         // than the product's runner orange.
+        // Warm obsidian, not pure black — a neutral #0B0C10 reads cold and
+        // flat under warm accents.
         obsidian: {
-          950: '#0B0C10',
-          900: '#0D0E12',
-          800: '#121419',
-          700: '#181B22',
+          950: '#0F0E12',
+          900: '#14131A',
+          800: '#1B1922',
+          700: '#24222D',
         },
         ember: {
           300: '#FF8A4C',
