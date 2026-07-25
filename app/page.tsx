@@ -96,7 +96,12 @@ export default function LandingPage() {
           amount of warm colour rescues it. Text holds the left, the product
           breaks out to the right at an angle. */}
       <section className="mk-grid relative overflow-hidden border-b border-white/[0.07]">
-        <div className="mk-bloom pointer-events-none absolute left-[8%] top-[-18rem] h-[36rem] w-[44rem]" />
+        {/* Two blooms, both kept INSIDE the section box. The previous single
+            bloom sat at top:-18rem inside an overflow-hidden parent, so most of
+            its radius was clipped before it ever painted — it was doing almost
+            nothing. One warms the headline side, one sits behind the device. */}
+        <div className="mk-bloom pointer-events-none absolute -top-24 left-[-6%] h-[34rem] w-[40rem] opacity-90" />
+        <div className="mk-bloom pointer-events-none absolute right-[-8%] top-8 h-[38rem] w-[42rem] opacity-75" />
         <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 pb-16 pt-12 sm:px-8 sm:pb-20 sm:pt-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
           <div className="relative z-10">
             <span className="inline-flex items-center gap-2.5 rounded-full border border-ember-500/30 bg-gradient-to-b from-ember-500/[0.16] to-ember-500/[0.04] px-4 py-1.5 text-[12.5px] font-semibold text-copper-200 shadow-[inset_0_1px_0_rgba(255,180,130,0.25),0_0_28px_-14px_rgba(255,107,43,0.9)]">
@@ -234,6 +239,7 @@ export default function LandingPage() {
             </Bento>
 
             <Bento
+              warm
               icon={<OfflineIcon />}
               title="Scores survive a dead gym Wi-Fi."
               body="When the signal drops mid-game, scores keep saving on the device and sync themselves the moment it comes back — in the order they were entered."
@@ -251,7 +257,7 @@ export default function LandingPage() {
             </Bento>
 
             <Bento
-              wide warm
+              wide
               icon={<HandBuiltIcon />}
               title="Checked by a person before anyone sees it."
               body="Every event is built and verified by hand. You get a walkthrough before it goes public, and someone reachable while it runs."
