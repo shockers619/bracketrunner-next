@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+/* Fraunces carries the marketing site's hand-made voice. Its SOFT axis rounds
+   the terminals so headlines read cut-by-hand rather than machine-set — the
+   product UI stays on Inter, which should feel precise. */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400;9..144,600;9..144,700&display=swap');
 
 :root {
   --bg: #0A0B0D;
@@ -125,6 +129,33 @@ button:active { transform: scale(0.98); }
 }
 .step-item.active .step-dot { background: var(--accent); border-color: var(--accent); color: #fff; }
 .step-item.complete .step-dot { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+
+/* ---- Marketing surface only ----
+   Warmer ground than the product UI, plus a faint paper grain. The grain is
+   what stops a large dark field from reading as a flat clinical slab; it's
+   nearly invisible per-pixel but you feel its absence. */
+.mk-grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+}
+
+.mk-display {
+  font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+  font-optical-sizing: auto;
+  font-variation-settings: 'SOFT' 40;
+  letter-spacing: -0.015em;
+}
+
+/* A rule that thins toward one end, like an inked stroke lifting off the page. */
+.mk-rule {
+  height: 2px;
+  border: 0;
+  background: linear-gradient(90deg, rgba(249,115,22,0.85), rgba(249,115,22,0.25) 55%, transparent);
+}
 
 /* ---- Intake wizard layout (responsive) ----
    The wizard was built desktop-first with fixed multi-column grids, which

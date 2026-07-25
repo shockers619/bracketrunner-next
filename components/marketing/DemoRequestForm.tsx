@@ -36,10 +36,10 @@ export default function DemoRequestForm() {
 
   if (status === 'sent') {
     return (
-      <div className="rounded-2xl border border-electric-500/30 bg-electric-500/[0.06] p-8 text-center">
-        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-electric-400">Request received</p>
-        <h3 className="mt-3 text-xl font-bold text-white">We&apos;ll be in touch shortly.</h3>
-        <p className="mt-2 text-sm leading-relaxed text-white/60">
+      <div className="rounded-2xl border border-runner-500/30 bg-runner-500/[0.07] p-8 text-center">
+        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-runner-400">Request received</p>
+        <h3 className="mt-3 mk-display text-2xl font-bold text-[#F3EADF]">We&apos;ll be in touch shortly.</h3>
+        <p className="mt-2 text-[15px] leading-relaxed text-[#F3EADF]/65">
           Thanks{name ? `, ${name.split(' ')[0]}` : ''} — we read every one of these ourselves. Expect a reply within a
           business day, usually sooner.
         </p>
@@ -48,7 +48,7 @@ export default function DemoRequestForm() {
   }
 
   return (
-    <form onSubmit={submit} className="rounded-2xl border border-white/10 bg-base-800/60 p-6 backdrop-blur-md sm:p-8">
+    <form onSubmit={submit} className="rounded-2xl border border-[#F3EADF]/12 bg-[#221A14]/80 p-6 backdrop-blur-md sm:p-8">
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Your name" required>
           <input required value={name} onChange={e => setName(e.target.value)} placeholder="Jordan Reyes" />
@@ -65,7 +65,7 @@ export default function DemoRequestForm() {
       </div>
 
       <div className="mt-4">
-        <label className="!mb-2 block font-mono text-[10px] uppercase tracking-[0.16em] text-white/45">
+        <label className="!mb-2 block text-[13px] font-semibold normal-case tracking-normal text-[#F3EADF]/70">
           Typical event size
         </label>
         <div className="flex flex-wrap gap-2">
@@ -76,8 +76,8 @@ export default function DemoRequestForm() {
               onClick={() => setEventSize(s === eventSize ? '' : s)}
               className={`rounded-full border px-3.5 py-2 text-[13px] font-semibold transition-colors ${
                 eventSize === s
-                  ? 'border-electric-500/50 bg-electric-500/15 text-electric-400'
-                  : 'border-white/10 bg-white/[0.03] text-white/60 hover:text-white'
+                  ? 'border-runner-500/50 bg-runner-500/15 text-runner-400'
+                  : 'border-[#F3EADF]/12 bg-[#F3EADF]/[0.04] text-[#F3EADF]/65 hover:text-[#F3EADF]'
               }`}
             >
               {s}
@@ -104,12 +104,11 @@ export default function DemoRequestForm() {
       <button
         type="submit"
         disabled={status === 'sending'}
-        className="mt-6 w-full rounded-xl bg-gradient-to-b from-electric-400 to-electric-600 px-6 py-4 text-[15px] font-bold text-base-950 shadow-lg shadow-electric-500/25 transition-opacity disabled:opacity-50"
+        className="mt-6 w-full rounded-full bg-runner-500 px-6 py-4 text-[15px] font-bold text-[#17120E] shadow-[0_10px_30px_-8px_rgba(249,115,22,0.55)] transition-opacity disabled:opacity-50"
       >
-        {status === 'sending' ? 'Sending…' : 'Request a demo'}
+        {status === 'sending' ? 'Sending…' : 'Send this over'}
       </button>
-      <p className="mt-3 text-center text-xs text-white/40">
-        No spam, no automated drip — a real person reads this and replies.
+      <p className="mt-3 text-center text-xs text-[#F3EADF]/45">No spam, no automated drip — a real person reads this and replies.
       </p>
     </form>
   )
@@ -118,8 +117,8 @@ export default function DemoRequestForm() {
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
     <div>
-      <label className="!mb-2 block font-mono text-[10px] uppercase tracking-[0.16em] text-white/45">
-        {label}{required && <span className="text-electric-400"> *</span>}
+      <label className="!mb-2 block font-mono text-[10px] uppercase tracking-[0.16em] text-[#F3EADF]/50">
+        {label}{required && <span className="text-runner-400"> *</span>}
       </label>
       {children}
     </div>

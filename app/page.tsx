@@ -2,16 +2,17 @@ import type { Metadata } from 'next'
 import DemoRequestForm from '@/components/marketing/DemoRequestForm'
 
 export const metadata: Metadata = {
-  title: 'BracketRunner — Concierge tournament management',
+  title: 'BracketRunner — We build your tournament by hand',
   description:
-    'Send us your teams and divisions. We build the whole event and hand you one live link — brackets, scores, and standings updating in real time. No ads, no logins for families.',
+    'Send us your teams however you have them. We set up the whole event ourselves and hand you back one link your families can actually use — live brackets, live scores, no ads.',
 }
 
-/** A miniature of the real public event page. It's the most persuasive thing we
- *  have, so the hero shows the actual product rather than a stock illustration. */
+/** A miniature of the real event page. Deliberately keeps the product's cooler
+ *  palette: a scoreboard should read sharp and precise even when everything
+ *  around it is warm. It's also the honest thing to show — this is the actual UI. */
 function LiveScorebug() {
   return (
-    <div className="w-full max-w-[380px] rounded-2xl border border-white/10 bg-base-900/80 p-4 shadow-2xl shadow-black/60 backdrop-blur-xl">
+    <div className="w-full max-w-[370px] rounded-2xl border border-white/10 bg-[#0D1014] p-4 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.8)]">
       <div className="flex items-center justify-between px-1 pb-3">
         <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/40">Now Playing</span>
         <span className="flex items-center gap-1.5 rounded-full border border-runner-500/30 bg-runner-500/10 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-runner-400">
@@ -19,31 +20,21 @@ function LiveScorebug() {
           Live
         </span>
       </div>
-
-      <div className="overflow-hidden rounded-xl border border-runner-500/25 bg-gradient-to-b from-runner-500/[0.07] to-base-800/80">
+      <div className="overflow-hidden rounded-xl border border-runner-500/25 bg-gradient-to-b from-runner-500/[0.07] to-white/[0.02]">
         <div className="border-b border-white/10 px-3.5 py-2">
-          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/45">Court 2 · Q3 4:12</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/45">Court 2 · 9:15 AM</span>
         </div>
         <div className="flex items-center justify-between gap-3 bg-white/[0.045] px-3.5 py-2.5">
-          <div className="flex min-w-0 flex-1 items-center gap-2.5">
-            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-blue-400 to-blue-700 text-xs font-bold text-base-950">W</span>
-            <span className="shrink-0 rounded bg-white/10 px-1.5 py-0.5 font-mono text-[10px] text-white/55">#1</span>
-            <span className="truncate text-[15px] font-bold text-white">Warriors</span>
-          </div>
+          <span className="truncate text-[15px] font-bold text-white">Warriors</span>
           <span className="font-mono text-2xl font-bold tabular-nums text-runner-400">58</span>
         </div>
         <div className="h-px bg-white/5" />
         <div className="flex items-center justify-between gap-3 px-3.5 py-2.5">
-          <div className="flex min-w-0 flex-1 items-center gap-2.5">
-            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-slate-400 to-slate-700 text-xs font-bold text-base-950">H</span>
-            <span className="shrink-0 rounded bg-white/10 px-1.5 py-0.5 font-mono text-[10px] text-white/55">#8</span>
-            <span className="truncate text-[15px] font-medium text-white/85">Hawks</span>
-          </div>
-          <span className="font-mono text-2xl font-bold tabular-nums text-white/60">41</span>
+          <span className="truncate text-[15px] font-medium text-white/85">Hawks</span>
+          <span className="font-mono text-2xl font-bold tabular-nums text-white/55">41</span>
         </div>
       </div>
-
-      <div className="mt-2.5 overflow-hidden rounded-xl border border-white/10 bg-base-800/70">
+      <div className="mt-2.5 overflow-hidden rounded-xl border border-white/10 bg-white/[0.02]">
         <div className="border-b border-white/10 px-3.5 py-2">
           <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-electric-400/90">Final</span>
         </div>
@@ -61,168 +52,115 @@ function LiveScorebug() {
   )
 }
 
-function Step({ n, title, body }: { n: string; title: string; body: string }) {
-  return (
-    <div className="relative rounded-2xl border border-white/10 bg-base-800/40 p-6">
-      <span className="font-mono text-[11px] font-bold tracking-[0.18em] text-electric-400">{n}</span>
-      <h3 className="mt-3 text-lg font-bold text-white">{title}</h3>
-      <p className="mt-2 text-[15px] leading-relaxed text-white/60">{body}</p>
-    </div>
-  )
-}
-
-function Feature({ title, body }: { title: string; body: string }) {
-  return (
-    <div className="border-l-2 border-electric-500/40 pl-5">
-      <h3 className="text-lg font-bold text-white">{title}</h3>
-      <p className="mt-2 text-[15px] leading-relaxed text-white/60">{body}</p>
-    </div>
-  )
-}
-
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-base-950 text-white">
+    <div className="relative min-h-screen bg-[#17120E] text-[#F3EADF]">
       {/* ---- Nav ---- */}
-      <header className="sticky top-0 z-30 border-b border-white/10 bg-base-950/80 backdrop-blur-md">
-        <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
-          <span className="text-[17px] font-extrabold tracking-tight">
-            Bracket<span className="text-electric-400">Runner</span>
+      <header className="sticky top-0 z-30 border-b border-[#F3EADF]/10 bg-[#17120E]/90 backdrop-blur-md">
+        <nav className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
+          <span className="mk-display text-[19px] font-bold">
+            Bracket<span className="text-runner-400">Runner</span>
           </span>
           <div className="flex shrink-0 items-center gap-1 sm:gap-3">
-            <a href="/signin" className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-semibold text-white/70 transition-colors hover:text-white">
+            <a href="/signin" className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-semibold text-[#F3EADF]/65 transition-colors hover:text-[#F3EADF]">
               Sign in
             </a>
-            <a
-              href="#demo"
-              className="whitespace-nowrap rounded-lg bg-white/10 px-3.5 py-2 text-[13px] font-bold text-white transition-colors hover:bg-white/15 sm:px-4 sm:text-sm"
-            >
-              Request a demo
+            <a href="#demo" className="whitespace-nowrap rounded-full border border-runner-500/40 bg-runner-500/10 px-4 py-2 text-[13px] font-bold text-runner-400 transition-colors hover:bg-runner-500/20 sm:text-sm">
+              Talk to us
             </a>
           </div>
         </nav>
       </header>
 
       {/* ---- Hero ---- */}
-      <section className="relative overflow-hidden border-b border-white/10">
-        <div className="pointer-events-none absolute -left-32 -top-40 h-[28rem] w-[28rem] rounded-full bg-electric-500/10 blur-3xl" />
-        <div className="pointer-events-none absolute -right-24 top-20 h-80 w-80 rounded-full bg-runner-500/10 blur-3xl" />
-        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-16 sm:px-8 sm:py-24 lg:grid-cols-[1.1fr_auto]">
-          <div>
-            <span className="inline-block rounded-full border border-electric-500/30 bg-electric-500/10 px-3 py-1 font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-electric-400">
-              Concierge tournament management
-            </span>
-            <h1 className="mt-6 text-[2.5rem] font-extrabold leading-[1.05] tracking-[-0.03em] text-white sm:text-[3.5rem]">
-              Hand us your teams.<br />
-              We hand you a live tournament.
-            </h1>
-            <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-white/65">
-              Send us your rosters, divisions, and venues in whatever format you already have. We build the entire
-              event and give you one link — brackets, live scores, and standings that update the moment a game ends.
-              No ads. No app for families to download. No spreadsheets at the scorer&apos;s table.
-            </p>
-            <div className="mt-9 flex flex-wrap items-center gap-4">
-              <a
-                href="#demo"
-                className="rounded-xl bg-gradient-to-b from-electric-400 to-electric-600 px-7 py-4 text-[15px] font-bold text-base-950 shadow-lg shadow-electric-500/25 transition-opacity hover:opacity-95"
-              >
-                Request a demo
-              </a>
-              <span className="font-mono text-[13px] text-white/40">Custom pricing per event · we&apos;ll scope it with you</span>
+      <section className="mk-grain relative overflow-hidden">
+        <div className="pointer-events-none absolute -right-40 -top-32 h-[30rem] w-[30rem] rounded-full bg-runner-500/[0.09] blur-3xl" />
+        <div className="relative mx-auto max-w-5xl px-5 pb-16 pt-14 sm:px-8 sm:pb-24 sm:pt-20">
+          <p className="text-[15px] italic text-runner-400/90">Run by people, not a portal.</p>
+          <h1 className="mk-display mt-5 max-w-3xl text-[2.75rem] font-bold leading-[1.02] sm:text-[4.25rem]">
+            We build your tournament by hand.
+          </h1>
+          <hr className="mk-rule mt-8 w-40" />
+
+          <div className="mt-8 grid gap-12 lg:grid-cols-[1.05fr_auto] lg:items-start">
+            <div>
+              <p className="max-w-xl text-[18px] leading-[1.7] text-[#F3EADF]/70">
+                Send us your teams however you&apos;ve got them — a spreadsheet, an email, a photo of a legal pad.
+                We set the whole thing up ourselves, walk you through it before anything goes public, and hand
+                back one link your families can actually use.
+              </p>
+              <p className="mt-5 max-w-xl text-[18px] leading-[1.7] text-[#F3EADF]/70">
+                No software for you to learn. No app for anyone to download. No ads between a parent and
+                their kid&apos;s game.
+              </p>
+              <div className="mt-10 flex flex-wrap items-center gap-5">
+                <a
+                  href="#demo"
+                  className="rounded-full bg-runner-500 px-8 py-4 text-[15px] font-bold text-[#17120E] shadow-[0_10px_30px_-8px_rgba(249,115,22,0.6)] transition-transform hover:-translate-y-0.5"
+                >
+                  Tell us about your event
+                </a>
+                <span className="text-[14px] italic text-[#F3EADF]/45">
+                  Every event priced on its own — we&apos;ll scope it with you.
+                </span>
+              </div>
+            </div>
+            <div className="flex justify-center lg:justify-end">
+              <LiveScorebug />
             </div>
           </div>
-          <div className="flex justify-center lg:justify-end">
-            <LiveScorebug />
-          </div>
         </div>
       </section>
 
-      {/* ---- How it works ---- */}
-      <section className="border-b border-white/10 px-5 py-16 sm:px-8 sm:py-20">
-        <div className="mx-auto max-w-6xl">
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/40">How it works</p>
-          <h2 className="mt-3 max-w-2xl text-[1.75rem] font-bold leading-tight tracking-tight sm:text-[2.25rem]">
-            You run the event. We handle the setup.
+      {/* ---- How it works: a narrative, not a grid of boxes ---- */}
+      <section className="border-t border-[#F3EADF]/10 px-5 py-16 sm:px-8 sm:py-24">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="mk-display text-[2rem] font-bold leading-tight sm:text-[2.75rem]">
+            What working with us looks like.
           </h2>
-          {/* Numbered because this genuinely is a sequence the director moves through */}
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            <Step
-              n="01"
-              title="Send us your event"
-              body="Rosters, divisions, venues, court availability — a spreadsheet, an email, a photo of a whiteboard. We'll take it from there."
-            />
-            <Step
-              n="02"
-              title="We build it with you"
-              body="We set up divisions, seeding, pools and brackets, then walk you through it before anything goes public. Nothing goes live until you say so."
-            />
-            <Step
-              n="03"
-              title="Share one link"
-              body="Coaches and families follow along in real time. You keep full control during the event — and we stay on call while it runs."
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* ---- Features ---- */}
-      <section className="border-b border-white/10 px-5 py-16 sm:px-8 sm:py-20">
-        <div className="mx-auto max-w-6xl">
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/40">Why directors switch</p>
-          <h2 className="mt-3 max-w-2xl text-[1.75rem] font-bold leading-tight tracking-tight sm:text-[2.25rem]">
-            Built by people who&apos;ve watched this software fail in a gym.
-          </h2>
-          <div className="mt-10 grid gap-8 md:grid-cols-2 md:gap-x-12">
-            <Feature
-              title="Scores survive dead gym Wi-Fi"
-              body="When the signal drops mid-game, scores keep saving on the device and sync themselves the moment it reconnects — in the order they were entered. Nobody re-enters a thing."
-            />
-            <Feature
-              title="A link, not a login"
-              body="Families open a URL and see the bracket. No account, no app, no password reset at 8am on a Saturday."
-            />
-            <Feature
-              title="Zero ads. Ever."
-              body="No banner ads, no upsells, no third-party trackers between a parent and their kid's game. Compare that to what you're using now."
-            />
-            <Feature
-              title="An engine that doesn't get brackets wrong"
-              body="Single and double elimination — including the odd team counts that break other tools — plus round robin, pool play, and transparent tiebreakers. Backed by 100+ automated correctness tests."
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* ---- Concierge / positioning ---- */}
-      <section className="border-b border-white/10 px-5 py-16 sm:px-8 sm:py-20">
-        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-2 lg:items-center">
-          <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/40">White-glove by default</p>
-            <h2 className="mt-3 text-[1.75rem] font-bold leading-tight tracking-tight sm:text-[2.25rem]">
-              You shouldn&apos;t have to learn software to run your own event.
-            </h2>
-            <p className="mt-5 text-[17px] leading-relaxed text-white/65">
-              Most tournament platforms hand you a login and wish you luck. We do the intake ourselves — divisions,
-              seeding, pools, brackets — and hand back a finished event. During the weekend you get full control to
-              fix a score, override a matchup, or reset a match, with every change logged.
-            </p>
-            <a
-              href="#demo"
-              className="mt-8 inline-block rounded-xl border border-white/15 bg-white/[0.04] px-6 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-white/10"
-            >
-              Talk to us about your next event
-            </a>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="mt-12 flex flex-col gap-11">
             {[
-              ['Managed setup', 'We build the event for you, start to finish.'],
-              ['Live support', 'We’re reachable while your event is running.'],
-              ['Director overrides', 'Fix anything mid-event — every change audited.'],
-              ['White-label', 'Your branding and your own domain, on request.'],
+              ['You send us what you have.',
+               'Rosters, divisions, venues, court availability. We are genuinely not fussy about the format — if you can read it, we can work from it.'],
+              ['We build the event.',
+               'Divisions, seeding, pools, brackets, and a schedule that respects rest between games. Then we walk you through the whole thing. Nothing goes public until you say it is right.'],
+              ['You share one link.',
+               'Coaches and families follow along live. You keep full control all weekend — fix a score, override a matchup, move a game — and we stay reachable while it runs.'],
+            ].map(([title, body], i) => (
+              <div key={title} className="flex gap-6 sm:gap-8">
+                <span className="mk-display shrink-0 pt-1 text-[2rem] font-bold leading-none text-runner-500/45 sm:text-[2.5rem]">
+                  {i + 1}
+                </span>
+                <div>
+                  <h3 className="mk-display text-[1.4rem] font-semibold leading-snug">{title}</h3>
+                  <p className="mt-2.5 text-[17px] leading-[1.7] text-[#F3EADF]/65">{body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ---- Why directors switch ---- */}
+      <section className="border-t border-[#F3EADF]/10 bg-[#1C1610] px-5 py-16 sm:px-8 sm:py-24">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="mk-display text-[2rem] font-bold leading-tight sm:text-[2.75rem]">
+            The details that decide a weekend.
+          </h2>
+          <div className="mt-12 flex flex-col gap-10">
+            {[
+              ['Scores survive a dead gym Wi-Fi.',
+               'When the signal drops mid-game, scores keep saving on the device and sync themselves the moment it comes back — in the order they were entered. Nobody re-enters anything.'],
+              ['A link, not a login.',
+               'Families open a URL and see the bracket. No account, no app, no password reset at eight in the morning on a Saturday.'],
+              ['No ads. Not now, not later.',
+               'Nothing sits between a parent and their kid’s game. No banners, no upsells, no trackers. That is not a launch promise we quietly walk back.'],
+              ['Brackets that do not get it wrong.',
+               'Single and double elimination — including the awkward team counts that break other tools — plus round robin, pool play, and tiebreakers you can actually explain to a coach. It is checked by more than a hundred automated tests.'],
             ].map(([title, body]) => (
-              <div key={title} className="rounded-xl border border-white/10 bg-base-800/40 p-5">
-                <p className="text-[15px] font-bold text-white">{title}</p>
-                <p className="mt-1.5 text-sm leading-relaxed text-white/55">{body}</p>
+              <div key={title}>
+                <h3 className="mk-display text-[1.35rem] font-semibold leading-snug">{title}</h3>
+                <p className="mt-2.5 text-[17px] leading-[1.7] text-[#F3EADF]/65">{body}</p>
               </div>
             ))}
           </div>
@@ -230,17 +168,21 @@ export default function LandingPage() {
       </section>
 
       {/* ---- Demo request ---- */}
-      <section id="demo" className="scroll-mt-20 px-5 py-16 sm:px-8 sm:py-24">
-        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+      <section id="demo" className="mk-grain relative scroll-mt-20 overflow-hidden border-t border-[#F3EADF]/10 px-5 py-16 sm:px-8 sm:py-24">
+        <div className="pointer-events-none absolute -left-32 bottom-0 h-96 w-96 rounded-full bg-runner-500/[0.07] blur-3xl" />
+        <div className="relative mx-auto grid max-w-5xl gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-electric-400">Request a demo</p>
-            <h2 className="mt-3 text-[1.75rem] font-bold leading-tight tracking-tight sm:text-[2.25rem]">
+            <h2 className="mk-display text-[2rem] font-bold leading-tight sm:text-[2.75rem]">
               Tell us about your next event.
             </h2>
-            <p className="mt-5 text-[17px] leading-relaxed text-white/65">
-              We&apos;ll show you exactly what your tournament would look like — using your real teams and divisions,
-              not a canned demo. Pricing is scoped to your event size and sport, so let&apos;s start with what
-              you&apos;re running.
+            <hr className="mk-rule mt-6 w-28" />
+            <p className="mt-6 text-[17px] leading-[1.7] text-[#F3EADF]/70">
+              We&apos;ll show you what your tournament would actually look like — built from your real teams and
+              divisions, not a canned demo.
+            </p>
+            <p className="mt-4 text-[17px] leading-[1.7] text-[#F3EADF]/70">
+              Pricing depends on the size and sport, so the honest answer is: tell us what you&apos;re running and
+              we&apos;ll give you a real number.
             </p>
           </div>
           <DemoRequestForm />
@@ -248,13 +190,13 @@ export default function LandingPage() {
       </section>
 
       {/* ---- Footer ---- */}
-      <footer className="border-t border-white/10 px-5 py-10 sm:px-8">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4">
-          <span className="text-[15px] font-extrabold tracking-tight">
-            Bracket<span className="text-electric-400">Runner</span>
+      <footer className="border-t border-[#F3EADF]/10 px-5 py-10 sm:px-8">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
+          <span className="mk-display text-[17px] font-bold">
+            Bracket<span className="text-runner-400">Runner</span>
           </span>
-          <p className="font-mono text-xs text-white/35">Tournament management for club and event directors.</p>
-          <a href="/signin" className="text-sm font-semibold text-white/60 transition-colors hover:text-white">
+          <p className="text-sm italic text-[#F3EADF]/40">Tournament management for club and event directors.</p>
+          <a href="/signin" className="text-sm font-semibold text-[#F3EADF]/60 transition-colors hover:text-[#F3EADF]">
             Director sign in →
           </a>
         </div>
