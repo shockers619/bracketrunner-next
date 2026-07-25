@@ -133,7 +133,7 @@ export default function IntakePage() {
   }
 
   return (
-    <div style={{ maxWidth: '960px', margin: '0 auto', padding: '48px 24px', display: 'grid', gridTemplateColumns: '200px 1fr', gap: '40px' }}>
+    <div className="intake-shell">
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
           <h1 style={{ fontSize: '18px' }}>New Event</h1>
@@ -167,6 +167,8 @@ export default function IntakePage() {
             divisions={state.divisions}
             teamsByDivision={state.teamsByDivision}
             onChange={teamsByDivision => setState({ ...state, teamsByDivision })}
+            poolConfigByDivision={state.poolConfigByDivision}
+            onPoolConfigChange={poolConfigByDivision => setState({ ...state, poolConfigByDivision })}
           />
         )}
         {step === 4 && tenantId && (

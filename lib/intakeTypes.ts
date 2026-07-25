@@ -33,12 +33,22 @@ export interface TeamDraft {
   seed?: number
 }
 
+/** Per-division pool-play setup, keyed by the division's localId. Only used by
+ *  divisions with format 'pool_to_bracket'. */
+export interface PoolConfigDraft {
+  poolCount: number
+  advancingPerPool: number
+}
+
+export const DEFAULT_POOL_CONFIG: PoolConfigDraft = { poolCount: 2, advancingPerPool: 2 }
+
 export interface IntakeState {
   tenantId: string
   event: EventDetails
   divisions: DivisionDraft[]
   venues: VenueDraft[]
   teamsByDivision: Record<string, TeamDraft[]>
+  poolConfigByDivision: Record<string, PoolConfigDraft>
 }
 
 export function emptyIntakeState(): IntakeState {
@@ -48,7 +58,18 @@ export function emptyIntakeState(): IntakeState {
     divisions: [],
     venues: [],
     teamsByDivision: {},
+    poolConfigByDivision: {},
   }
+}
+
+/** Orders teams the way the intake route assigns final seeds: explicitly
+ *  seeded teams first (ascending), then unseeded teams in entry order. The
+ *  effective seed of each team is its index + 1. Shared by the wizard preview
+ *  and the server so the pools a director previews match what gets created. */
+export function orderedForSeeding(teams: TeamDraft[]): TeamDraft[] {
+  const seeded = teams.filter(t => t.seed != null).sort((a, b) => a.seed! - b.seed!)
+  const unseeded = teams.filter(t => t.seed == null)
+  return [...seeded, ...unseeded]
 }
 
 export function newLocalId(): string {

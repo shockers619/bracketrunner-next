@@ -58,12 +58,12 @@ export default function EventsPage() {
             className="card"
             style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <p style={{ fontWeight: 700, fontSize: '16px' }}>{e.title}</p>
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ minWidth: 0 }}>
+                <p style={{ fontWeight: 700, fontSize: '16px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{e.title}</p>
                 <p className="helper-text">{e.sport} · {e.start_date}</p>
               </div>
-              <span className="mono" style={{ color: 'var(--accent)' }}>Manage →</span>
+              <span className="mono" style={{ color: 'var(--accent)', flexShrink: 0 }}>Manage →</span>
             </div>
           </a>
         ))}

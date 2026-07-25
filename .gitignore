@@ -2,3 +2,10 @@ node_modules/
 .next/
 .DS_Store
 .env.local
+
+# Build artifact — regenerated on every typecheck, shouldn't be version-controlled
+tsconfig.tsbuildinfo
+
+# Supabase CLI local artifacts (keep migrations/ and config, ignore temp state)
+supabase/.temp/
+supabase/.branches/

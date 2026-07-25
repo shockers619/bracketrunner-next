@@ -44,3 +44,32 @@ export function snakeSeedPools(teams: Team[], poolCount: number): PoolAssignment
     teams: poolTeams,
   }))
 }
+
+export interface AdvancementRulePlan {
+  poolIndex: number
+  sourcePosition: number // 1 = pool winner, 2 = runner-up, ...
+  targetSeed: number
+}
+
+/**
+ * Builds the standard "top N from each pool advance" seeding plan. Seeds are
+ * assigned by interleaving rank across pools — all pool winners first, then all
+ * runners-up, and so on — so the strongest finishers don't cluster at the top
+ * of the bracket seed list (this mirrors how snake seeding balances the pools
+ * to begin with). A pool smaller than a given rank simply contributes no team
+ * at that rank, so uneven pool sizes are handled gracefully and the resulting
+ * seeds stay contiguous from 1.
+ */
+export function buildAdvancementRules(poolSizes: number[], advancingPerPool: number): AdvancementRulePlan[] {
+  const rules: AdvancementRulePlan[] = []
+  let seed = 1
+  for (let rank = 1; rank <= advancingPerPool; rank++) {
+    for (let poolIndex = 0; poolIndex < poolSizes.length; poolIndex++) {
+      if (poolSizes[poolIndex] >= rank) {
+        rules.push({ poolIndex, sourcePosition: rank, targetSeed: seed })
+        seed++
+      }
+    }
+  }
+  return rules
+}

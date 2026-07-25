@@ -1,6 +1,7 @@
 'use client'
 import type { DivisionDraft } from '@/lib/intakeTypes'
 import { newLocalId } from '@/lib/intakeTypes'
+import Select from '@/components/admin/Select'
 
 const FORMAT_LABELS: Record<DivisionDraft['format'], string> = {
   single_elimination: 'Single Elimination',
@@ -37,18 +38,18 @@ export default function StepDivisions({
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}>
         {divisions.map(d => (
-          <div key={d.localId} style={{ border: '1px solid var(--line)', borderRadius: '8px', padding: '16px', display: 'grid', gridTemplateColumns: '2fr 1.5fr 1fr auto', gap: '12px', alignItems: 'end' }}>
+          <div key={d.localId} className="field-row field-row-division" style={{ border: '1px solid var(--line)', borderRadius: '8px', padding: '16px' }}>
             <div>
               <label>Division name</label>
               <input value={d.name} onChange={e => updateDivision(d.localId, { name: e.target.value })} placeholder="14U Boys Gold" />
             </div>
             <div>
               <label>Format</label>
-              <select value={d.format} onChange={e => updateDivision(d.localId, { format: e.target.value as DivisionDraft['format'] })}>
-                {Object.entries(FORMAT_LABELS).map(([val, label]) => (
-                  <option key={val} value={val}>{label}</option>
-                ))}
-              </select>
+              <Select
+                value={d.format}
+                onChange={val => updateDivision(d.localId, { format: val as DivisionDraft['format'] })}
+                options={Object.entries(FORMAT_LABELS).map(([value, label]) => ({ value, label }))}
+              />
             </div>
             <div>
               <label>Min rest (min)</label>

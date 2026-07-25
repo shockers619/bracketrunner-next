@@ -1,5 +1,17 @@
 'use client'
 import type { IntakeState } from '@/lib/intakeTypes'
+import { DEFAULT_POOL_CONFIG, orderedForSeeding } from '@/lib/intakeTypes'
+import { snakeSeedPools, buildAdvancementRules } from '@/lib/engine/poolAssignment'
+
+function poolSummary(state: IntakeState, divisionLocalId: string): string | null {
+  const cfg = state.poolConfigByDivision[divisionLocalId] ?? DEFAULT_POOL_CONFIG
+  const teams = state.teamsByDivision[divisionLocalId] || []
+  if (teams.length < 2 || cfg.poolCount < 1 || cfg.poolCount > teams.length) return null
+  const engineTeams = orderedForSeeding(teams).map((t, i) => ({ id: String(i), name: t.name, seed: i + 1 }))
+  const assignment = snakeSeedPools(engineTeams, cfg.poolCount)
+  const bracketSize = buildAdvancementRules(assignment.map(a => a.teams.length), cfg.advancingPerPool).length
+  return `${cfg.poolCount} pool${cfg.poolCount === 1 ? '' : 's'}, top ${cfg.advancingPerPool} advance → ${bracketSize}-team bracket`
+}
 
 export default function StepReview({
   state, submitting, submitError, onSubmit,
@@ -26,11 +38,15 @@ export default function StepReview({
         </div>
         <div>
           <p style={{ fontWeight: 600, fontSize: '14px' }}>{state.divisions.length} division{state.divisions.length === 1 ? '' : 's'}</p>
-          {state.divisions.map(d => (
-            <p key={d.localId} className="helper-text">
-              {d.name || '(unnamed)'} — {d.format.replace(/_/g, ' ')}, {(state.teamsByDivision[d.localId] || []).length} teams
-            </p>
-          ))}
+          {state.divisions.map(d => {
+            const pools = d.format === 'pool_to_bracket' ? poolSummary(state, d.localId) : null
+            return (
+              <p key={d.localId} className="helper-text">
+                {d.name || '(unnamed)'} — {d.format.replace(/_/g, ' ')}, {(state.teamsByDivision[d.localId] || []).length} teams
+                {pools && <span> · {pools}</span>}
+              </p>
+            )
+          })}
         </div>
         <div>
           <p style={{ fontWeight: 600, fontSize: '14px' }}>{state.venues.length} venue{state.venues.length === 1 ? '' : 's'}, {totalCourts} court{totalCourts === 1 ? '' : 's'}</p>

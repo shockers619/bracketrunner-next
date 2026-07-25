@@ -39,12 +39,23 @@ function newMatch(divisionId: string, meta: BracketMeta): Match {
  * bracket (LB) with the standard alternating consolidation/drop-down
  * structure, and a grand final with a conditional bracket-reset second game.
  *
- * SCOPE: power-of-2 team counts only for now. Byes compound significantly
- * with double-elimination's loser routing (a bye produces no WB loser to
- * route into LB, which shifts LB round sizing) — supporting that properly
- * is real additional design work, deliberately deferred rather than bolted
- * on unsafely. Round-robin and single-elimination both already support byes;
- * this one throws on non-power-of-2 input rather than silently mishandling it.
+ * BYES: non-power-of-2 team counts are supported. The bracket is built at the
+ * next power of two and the top seeds receive round-1 byes (exactly like
+ * single-elimination). The subtlety unique to double-elim is that a WB
+ * round-1 bye produces NO loser to drop into the losers bracket, which leaves
+ * LB slots empty. We resolve this by *contracting* those empty LB matches:
+ *
+ *   - LB round-1 match fed by one real WB loser + one bye  -> the real loser
+ *     skips straight to where that LB match would have fed (a "pass-through").
+ *   - LB round-1 match fed by two byes                     -> it is dead; the
+ *     WB round-2 loser that would have met its survivor skips ahead instead.
+ *
+ * Because a WB round-2 (or later) match always has two real teams — no WB
+ * round-1 match can be a double-bye, since the smaller seed in every pairing
+ * is always present — empty slots can only appear in LB round 1 and the first
+ * drop round. That keeps the contraction local and 1:1 with no cascading.
+ * The result contains only real, playable matches (plus the visible WB byes,
+ * which are kept as auto-completed matches the way single-elim does it).
  *
  * SIMPLIFICATION: LB drop-down pairings use direct positional matching
  * (survivor position i faces new-loser position i) rather than the extra
@@ -56,22 +67,16 @@ function newMatch(divisionId: string, meta: BracketMeta): Match {
 export function generateDoubleEliminationBracket(teams: Team[], opts: GenerateDoubleEliminationOptions): Match[] {
   if (teams.length < 2) throw new Error('Need at least 2 teams to generate a bracket')
   const n = teams.length
-  if ((n & (n - 1)) !== 0) {
-    throw new Error(
-      `generateDoubleEliminationBracket currently requires a power-of-2 team count (got ${n}). ` +
-      `Bye support for double-elimination is a deferred follow-up.`
-    )
-  }
-
-  const k = Math.log2(n)
-  const order = seedOrder(n)
+  const P = nextPowerOfTwo(n)
+  const k = Math.log2(P)
+  const order = seedOrder(P)
   const teamBySeed = new Map(teams.map(t => [t.seed, t]))
   const all: Match[] = []
 
-  // ---------- Winners bracket ----------
+  // ---------- Winners bracket skeleton (built at full power-of-2 size) ----------
   const wb: Match[][] = []
   for (let r = 0; r < k; r++) {
-    const count = n / Math.pow(2, r + 1)
+    const count = P / Math.pow(2, r + 1)
     const round: Match[] = []
     for (let pos = 0; pos < count; pos++) {
       const m = newMatch(opts.divisionId, blankMeta(r + 1, pos))
@@ -89,12 +94,10 @@ export function generateDoubleEliminationBracket(teams: Team[], opts: GenerateDo
       wb[r][pos].bracketMeta.nextMatchSlot = pos % 2 === 0 ? 'home' : 'away'
     }
   }
-  // Seed WB round 1
+  // Seed WB round 1 (absent seeds -> null slot = a bye)
   for (let pos = 0; pos < wb[0].length; pos++) {
-    const homeSeed = order[pos * 2]
-    const awaySeed = order[pos * 2 + 1]
-    wb[0][pos].homeTeamId = teamBySeed.get(homeSeed)?.id ?? null
-    wb[0][pos].awayTeamId = teamBySeed.get(awaySeed)?.id ?? null
+    wb[0][pos].homeTeamId = teamBySeed.get(order[pos * 2])?.id ?? null
+    wb[0][pos].awayTeamId = teamBySeed.get(order[pos * 2 + 1])?.id ?? null
   }
 
   // ---------- Losers bracket ----------
@@ -109,7 +112,7 @@ export function generateDoubleEliminationBracket(teams: Team[], opts: GenerateDo
     // "LB champion" slot with zero LB matches.
     wbFinal = wb[0][0]
   } else {
-    let survivorsCount = wb[0].length // = n/2 = L_1, the round-1 WB loser count
+    let survivorsCount = wb[0].length // = P/2 = L_1, the round-1 WB loser count
 
     // LB round 1: consolidation among round-1 WB losers
     {
@@ -206,5 +209,73 @@ export function generateDoubleEliminationBracket(teams: Team[], opts: GenerateDo
     wbFinal.bracketMeta.loserNextMatchSlot = 'away'
   }
 
-  return all
+  // ---------- Bye resolution ----------
+  // Nothing to do for exact powers of two: the bracket above is already whole.
+  if (P === n) return all
+
+  const wbById = new Map(all.map(m => [m.id, m]))
+
+  // 1) Auto-advance every WB round-1 bye (one team present) into round 2, the
+  //    same way single-elimination does. Record which round-1 positions are
+  //    byes so we can find the empty losers-bracket slots they leave behind.
+  const byePos = new Set<number>()
+  for (let pos = 0; pos < wb[0].length; pos++) {
+    const m = wb[0][pos]
+    const hasHome = m.homeTeamId !== null
+    const hasAway = m.awayTeamId !== null
+    if (hasHome === hasAway) continue // real match (or, impossibly, a double-bye)
+    byePos.add(pos)
+    m.status = 'completed'
+    m.bracketMeta.isBye = true
+    const advancingId = hasHome ? m.homeTeamId : m.awayTeamId
+    if (m.bracketMeta.nextMatchId) {
+      const nm = wbById.get(m.bracketMeta.nextMatchId)!
+      if (m.bracketMeta.nextMatchSlot === 'home') nm.homeTeamId = advancingId
+      else nm.awayTeamId = advancingId
+    }
+  }
+
+  // 2) Contract the losers bracket. lb[0] = LB round 1, lb[1] = first drop
+  //    round; these are the only rounds a bye can touch. LB round-1 match j is
+  //    fed by WB round-1 matches 2j (home) and 2j+1 (away); the first drop
+  //    round is 1:1 with LB round 1 (drop[j].home <- lb1[j], drop[j].away <-
+  //    WB round-2 match j's loser).
+  const removed = new Set<string>()
+  const lb1 = lb[0]
+  const dropRound = lb[1] // exists whenever there are byes (n >= 3 => k >= 2)
+
+  for (let j = 0; j < lb1.length; j++) {
+    const homeBye = byePos.has(2 * j)
+    const awayBye = byePos.has(2 * j + 1)
+    if (!homeBye && !awayBye) continue
+
+    const lb1m = lb1[j]
+    if (homeBye && awayBye) {
+      // Dead LB round-1 match: no losers arrive. Its drop-round match now has
+      // an empty home slot fed only by the (real) WB round-2 loser, so that
+      // loser skips the drop match and goes straight to where it fed.
+      removed.add(lb1m.id)
+      const dropM = dropRound[j]
+      const wbR2 = wb[1][j]
+      wbR2.bracketMeta.loserNextMatchId = dropM.bracketMeta.nextMatchId
+      wbR2.bracketMeta.loserNextMatchSlot = dropM.bracketMeta.nextMatchSlot
+      removed.add(dropM.id)
+    } else {
+      // Pass-through: exactly one real WB loser arrives, so route it straight
+      // to where this LB match would have fed and drop the LB match itself.
+      const realFeeder = homeBye ? wb[0][2 * j + 1] : wb[0][2 * j]
+      realFeeder.bracketMeta.loserNextMatchId = lb1m.bracketMeta.nextMatchId
+      realFeeder.bracketMeta.loserNextMatchSlot = lb1m.bracketMeta.nextMatchSlot
+      removed.add(lb1m.id)
+    }
+  }
+
+  // A bye has no loser: sever every WB round-1 bye's dangling loser link so no
+  // reference points at a removed match.
+  for (const pos of byePos) {
+    wb[0][pos].bracketMeta.loserNextMatchId = null
+    wb[0][pos].bracketMeta.loserNextMatchSlot = null
+  }
+
+  return all.filter(m => !removed.has(m.id))
 }

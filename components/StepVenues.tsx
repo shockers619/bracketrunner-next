@@ -50,7 +50,7 @@ export default function StepVenues({
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '16px' }}>
         {venues.map(v => (
           <div key={v.localId} style={{ border: '1px solid var(--line)', borderRadius: '8px', padding: '16px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1fr 1fr auto', gap: '12px', marginBottom: '14px', alignItems: 'end' }}>
+            <div className="field-row field-row-venue" style={{ marginBottom: '14px' }}>
               <div>
                 <label>Venue name</label>
                 <input value={v.name} onChange={e => updateVenue(v.localId, { name: e.target.value })} placeholder="Riverside Sports Complex" />

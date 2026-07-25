@@ -4,10 +4,10 @@ import type { MatchRecord, TeamRecord, CourtRecord, VenueRecord } from '@/lib/ev
 import ScoreboardCard from './ScoreboardCard'
 import EmptyState from './EmptyState'
 
-const CARD_WIDTH = 260
-const CARD_HEIGHT = 92
-const COLUMN_GAP = 72
-const UNIT_HEIGHT = 116 // vertical spacing between adjacent round-1 matches
+const CARD_WIDTH = 264
+const CARD_HEIGHT = 140 // matches the taller elevated ScoreboardCard
+const COLUMN_GAP = 80
+const UNIT_HEIGHT = 176 // vertical spacing between adjacent round-1 matches (> CARD_HEIGHT so cards never overlap)
 
 interface PositionedMatch {
   match: MatchRecord
@@ -87,7 +87,10 @@ export default function BracketTree({
   }
 
   return (
-    <div className="animate-[fadeInUp_0.3s_ease-out] overflow-x-auto pb-6">
+    // pt-9 reserves room for the round labels, which sit at top:-28 relative to
+    // the inner canvas — without it, `overflow-x-auto` (which computes
+    // overflow-y to `auto`, not `visible`) clips them off entirely.
+    <div className="animate-[fadeInUp_0.3s_ease-out] overflow-x-auto pb-6 pt-9">
       {duplicateWarning && (
         <div className="mb-4 rounded-lg border border-runner-500/40 bg-runner-500/10 px-4 py-2 text-sm text-runner-400">
           ⚠️ This bracket has more than one match at the same round/position — likely duplicate data from resolving twice. Cards below may overlap incorrectly.
@@ -100,8 +103,9 @@ export default function BracketTree({
               key={i}
               d={c.d}
               fill="none"
-              stroke={c.live ? 'rgba(14,165,233,0.55)' : 'rgba(255,255,255,0.12)'}
-              strokeWidth={c.live ? 2 : 1.5}
+              stroke={c.live ? 'rgba(56,189,248,0.6)' : 'rgba(255,255,255,0.1)'}
+              strokeWidth={c.live ? 2.5 : 1.5}
+              strokeLinecap="round"
             />
           ))}
         </svg>

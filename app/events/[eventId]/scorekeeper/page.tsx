@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useAuthTenant } from '@/lib/useAuthTenant'
 import { supabase } from '@/lib/supabase'
 import { enqueue, flushQueue, listQueued, type QueuedAction } from '@/lib/offlineQueue'
+import Select from '@/components/admin/Select'
 
 type MatchStatus = 'scheduled' | 'in_progress' | 'pending_confirmation' | 'completed' | 'cancelled'
 
@@ -284,22 +285,40 @@ export default function ScorekeeperPage({ params }: { params: { eventId: string 
         borderBottom: '1px solid var(--line)', padding: '14px 16px',
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <p style={{ fontSize: '11px', color: 'var(--ink-muted)', textTransform: 'uppercase', letterSpacing: '0.03em' }}>Scorekeeper</p>
-            <h1 style={{ fontSize: '17px', lineHeight: 1.2 }}>{eventTitle}</h1>
+          <div style={{ minWidth: 0 }}>
+            {/* Doubles as the back link — there was previously no way off this
+                page except the browser's back button. */}
+            <a
+              href={`/events/${params.eventId}`}
+              style={{ fontSize: '11px', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.03em', textDecoration: 'none' }}
+            >
+              ← Event
+            </a>
+            <h1 style={{ fontSize: '17px', lineHeight: 1.2, marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {eventTitle}
+            </h1>
           </div>
           <ConnectionBadge isOnline={isOnline} queuedCount={queuedCount} syncing={syncing} onRetry={runFlush} />
         </div>
 
+        {/* Themed dropdowns, not native <select> — the OS renders an open
+            native select as system chrome that no CSS can restyle, and a grey
+            iOS wheel is exactly the "legacy software" feel this avoids. */}
         <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-          <select value={divisionFilter} onChange={e => setDivisionFilter(e.target.value)} style={{ flex: 1, fontSize: '13px', padding: '8px' }}>
-            <option value="all">All divisions</option>
-            {divisions.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-          </select>
-          <select value={courtFilter} onChange={e => setCourtFilter(e.target.value)} style={{ flex: 1, fontSize: '13px', padding: '8px' }}>
-            <option value="all">All courts</option>
-            {courts.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </select>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <Select
+              value={divisionFilter}
+              onChange={setDivisionFilter}
+              options={[{ value: 'all', label: 'All divisions' }, ...divisions.map(d => ({ value: d.id, label: d.name }))]}
+            />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <Select
+              value={courtFilter}
+              onChange={setCourtFilter}
+              options={[{ value: 'all', label: 'All courts' }, ...courts.map(c => ({ value: c.id, label: c.name }))]}
+            />
+          </div>
         </div>
       </div>
 
@@ -395,21 +414,50 @@ function MatchCard({
   // a final score in. Typing from Not Started auto-flips the match to In
   // Progress via pushScore.
   const scoreEditable = match.status === 'scheduled' || match.status === 'in_progress'
+  // 0–0 isn't a "lead" — don't emphasize either side before anyone scores.
+  const hasScore = match.homeScore > 0 || match.awayScore > 0
+  const isLive = match.status === 'in_progress'
 
   return (
-    <div className="card" style={{ padding: '18px' }}>
+    <div
+      className="card"
+      style={{
+        padding: '16px 14px',
+        borderRadius: '18px',
+        // The live game is the hero: an accent ring and glow lift it above the
+        // not-started cards so the right one is obvious at a glance courtside.
+        ...(isLive ? {
+          borderColor: 'rgba(14, 165, 233, 0.32)',
+          boxShadow: '0 0 0 1px rgba(14, 165, 233, 0.12), 0 18px 44px -26px rgba(14, 165, 233, 0.45)',
+        } : null),
+      }}
+    >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
         <StatusPill status={match.status} />
+        {/* ~44px tall — a real thumb target for someone standing at a scorer's
+            table, not a desktop-sized 12px button. */}
         {match.status === 'scheduled' && (
-          <button className="btn-secondary" type="button" onClick={() => onToggleStarted(match)} style={{ fontSize: '12px', padding: '6px 12px' }}>
+          <button className="btn-secondary" type="button" onClick={() => onToggleStarted(match)} style={{ fontSize: '13px', padding: '11px 16px' }}>
             Start match
           </button>
         )}
       </div>
 
-      <ScoreRow teamName={homeTeamName} score={match.homeScore} onSet={v => onSet(match, 'home', v)} disabled={!scoreEditable} />
-      <div style={{ height: '10px' }} />
-      <ScoreRow teamName={awayTeamName} score={match.awayScore} onSet={v => onSet(match, 'away', v)} disabled={!scoreEditable} />
+      <ScoreRow
+        teamName={homeTeamName}
+        score={match.homeScore}
+        onSet={v => onSet(match, 'home', v)}
+        disabled={!scoreEditable}
+        leading={hasScore && match.homeScore > match.awayScore}
+      />
+      <div style={{ height: '4px' }} />
+      <ScoreRow
+        teamName={awayTeamName}
+        score={match.awayScore}
+        onSet={v => onSet(match, 'away', v)}
+        disabled={!scoreEditable}
+        leading={hasScore && match.awayScore > match.homeScore}
+      />
 
       {match.status === 'pending_confirmation' && (
         <div style={{ marginTop: '16px', border: '1px solid rgba(251, 191, 36, 0.4)', borderRadius: '10px', padding: '14px', background: 'rgba(251, 191, 36, 0.06)' }}>
@@ -479,8 +527,8 @@ function StatusPill({ status }: { status: MatchStatus }) {
   )
 }
 
-function ScoreRow({ teamName, score, onSet, disabled }: {
-  teamName: string; score: number; onSet: (value: number) => void; disabled: boolean
+function ScoreRow({ teamName, score, onSet, disabled, leading }: {
+  teamName: string; score: number; onSet: (value: number) => void; disabled: boolean; leading: boolean
 }) {
   // Local draft string so the field doesn't fight the user mid-keystroke
   // (e.g. clearing it to type "40" shouldn't snap back to "0" between
@@ -495,27 +543,43 @@ function ScoreRow({ teamName, score, onSet, disabled }: {
     setDraft(null)
   }
 
+  // Team name left, score right — the scorebug reading order, and it keeps the
+  // number field pinned to the same spot on every row so a scorekeeper's thumb
+  // lands in the same place without looking.
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ fontWeight: 700, fontSize: '15px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{teamName}</p>
-        <input
-          type="number"
-          inputMode="numeric"
-          min={0}
-          value={displayValue}
-          disabled={disabled}
-          onChange={e => setDraft(e.target.value)}
-          onBlur={commit}
-          onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
-          className="mono"
-          style={{
-            width: '110px', fontSize: '30px', fontWeight: 700, lineHeight: 1,
-            padding: '2px 6px', border: '1px solid var(--line)', borderRadius: '8px', background: 'transparent',
-            opacity: disabled ? 0.5 : 1,
-          }}
-        />
-      </div>
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: '12px',
+      padding: '9px 11px', borderRadius: '12px',
+      background: leading ? 'rgba(255, 255, 255, 0.045)' : 'transparent',
+    }}>
+      <p style={{
+        flex: 1, minWidth: 0, fontSize: '17px', fontWeight: 700, lineHeight: 1.25,
+        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+        color: leading ? 'var(--ink)' : 'rgba(245, 246, 247, 0.8)',
+      }}>
+        {teamName}
+      </p>
+      <input
+        type="number"
+        inputMode="numeric"
+        min={0}
+        value={displayValue}
+        disabled={disabled}
+        onChange={e => setDraft(e.target.value)}
+        onBlur={commit}
+        onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
+        className="mono"
+        aria-label={`${teamName} score`}
+        style={{
+          width: '94px', flexShrink: 0, textAlign: 'center',
+          fontSize: '32px', fontWeight: 700, lineHeight: 1.1,
+          fontVariantNumeric: 'tabular-nums',
+          padding: '9px 4px', border: '1px solid var(--line)', borderRadius: '10px',
+          background: 'rgba(255, 255, 255, 0.03)',
+          color: leading ? 'var(--accent)' : 'var(--ink)',
+          opacity: disabled ? 0.45 : 1,
+        }}
+      />
     </div>
   )
 }

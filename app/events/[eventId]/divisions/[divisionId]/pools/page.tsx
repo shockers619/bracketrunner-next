@@ -40,9 +40,9 @@ export default function PoolsPage({ params }: { params: { eventId: string; divis
         .eq('id', params.divisionId)
         .single()
       setDivisionName(division?.name || '')
-      // pool_to_bracket division still needs an eventual elimination format
-      // for the generated bracket — default to single elim, director can
-      // reconfigure the underlying division format for double elim later.
+      // pool_to_bracket division still needs an eventual elimination format for
+      // the generated bracket; default to single elim and let the director pick
+      // single vs double at resolve time (both handle byes now).
       setDivisionFormat('single_elimination')
 
       const { data: teamRows } = await supabase
@@ -250,6 +250,17 @@ export default function PoolsPage({ params }: { params: { eventId: string; divis
           <p className="helper-text" style={{ marginBottom: '16px' }}>
             Once every pool match is marked completed, resolve pool play into the elimination bracket.
           </p>
+          <div style={{ marginBottom: '16px' }}>
+            <label>Bracket format</label>
+            <select
+              value={divisionFormat}
+              onChange={e => setDivisionFormat(e.target.value as 'single_elimination' | 'double_elimination')}
+              style={{ maxWidth: '260px' }}
+            >
+              <option value="single_elimination">Single elimination</option>
+              <option value="double_elimination">Double elimination</option>
+            </select>
+          </div>
           <div style={{ marginBottom: '16px' }}>
             <label>Point differential cap (optional)</label>
             <input

@@ -36,10 +36,25 @@ export async function ensureTenantForUser(userId: string): Promise<string> {
 }
 
 export async function createTenantForUser(userId: string, name: string) {
-  const slug = slugify(name) || `org-${userId.slice(0, 8)}`
-  const { data: tenant, error: tenantErr } = await supabase
-    .rpc('create_tenant_with_membership', { tenant_name: name, tenant_slug: slug })
-    .single()
-  if (tenantErr) throw new Error(`Creating organization: ${tenantErr.message}`)
-  return tenant as { id: string; name: string; slug: string }
+  const base = slugify(name) || `org-${userId.slice(0, 8)}`
+
+  // Two different organizations can legitimately produce the same slug (e.g.
+  // both named "Elite Hoops"). Rather than hard-fail on the tenants_slug_key
+  // unique constraint with a raw Postgres error, try the clean slug first and,
+  // only on a genuine slug collision, retry with a short suffix.
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const slug = attempt === 0 ? base : `${base}-${Math.random().toString(36).slice(2, 6)}`
+    const { data: tenant, error } = await supabase
+      .rpc('create_tenant_with_membership', { tenant_name: name, tenant_slug: slug })
+      .single()
+
+    if (!error) return tenant as { id: string; name: string; slug: string }
+
+    // Postgres 23505 = unique_violation. Only a slug collision is retryable;
+    // anything else is a real failure and should surface immediately.
+    const isSlugCollision = /tenants_slug_key/i.test(error.message) || /duplicate key/i.test(error.message)
+    if (!isSlugCollision) throw new Error(`Creating organization: ${error.message}`)
+  }
+
+  throw new Error('Creating organization: couldn’t generate a unique URL for that name — please try a slightly different name.')
 }

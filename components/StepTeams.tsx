@@ -1,7 +1,8 @@
 'use client'
 import { useState } from 'react'
-import type { DivisionDraft, TeamDraft } from '@/lib/intakeTypes'
+import type { DivisionDraft, TeamDraft, PoolConfigDraft } from '@/lib/intakeTypes'
 import { parseTeamsFromCSV, parseTeamsFromJSON } from '@/lib/parser'
+import PoolConfig from '@/components/PoolConfig'
 
 function TeamsForDivision({
   division, teams, onChange,
@@ -45,8 +46,8 @@ function TeamsForDivision({
         <button
           type="button"
           className={mode === 'manual' ? 'btn-secondary' : 'btn-ghost'}
-          onClick={() => setMode('manual')}
-        >Add manually</button>
+          onClick={() => { setMode('manual'); if (teams.length === 0) addBlankTeam() }}
+        >Enter manually</button>
         <button
           type="button"
           className={mode === 'paste' ? 'btn-secondary' : 'btn-ghost'}
@@ -58,7 +59,7 @@ function TeamsForDivision({
         <>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '10px' }}>
             {teams.map((t, i) => (
-              <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 90px auto', gap: '8px' }}>
+              <div key={i} className="field-row field-row-team">
                 <input placeholder="Team name" value={t.name} onChange={e => updateTeam(i, { name: e.target.value })} />
                 <input placeholder="Club (optional)" value={t.clubName || ''} onChange={e => updateTeam(i, { clubName: e.target.value })} />
                 <input
@@ -120,11 +121,13 @@ function TeamsForDivision({
 }
 
 export default function StepTeams({
-  divisions, teamsByDivision, onChange,
+  divisions, teamsByDivision, onChange, poolConfigByDivision, onPoolConfigChange,
 }: {
   divisions: DivisionDraft[]
   teamsByDivision: Record<string, TeamDraft[]>
   onChange: (v: Record<string, TeamDraft[]>) => void
+  poolConfigByDivision: Record<string, PoolConfigDraft>
+  onPoolConfigChange: (v: Record<string, PoolConfigDraft>) => void
 }) {
   return (
     <div className="card">
@@ -134,12 +137,20 @@ export default function StepTeams({
       </p>
       {divisions.length === 0 && <p className="helper-text">Add a division first (previous step) before adding teams.</p>}
       {divisions.map(d => (
-        <TeamsForDivision
-          key={d.localId}
-          division={d}
-          teams={teamsByDivision[d.localId] || []}
-          onChange={teams => onChange({ ...teamsByDivision, [d.localId]: teams })}
-        />
+        <div key={d.localId}>
+          <TeamsForDivision
+            division={d}
+            teams={teamsByDivision[d.localId] || []}
+            onChange={teams => onChange({ ...teamsByDivision, [d.localId]: teams })}
+          />
+          {d.format === 'pool_to_bracket' && (
+            <PoolConfig
+              teams={teamsByDivision[d.localId] || []}
+              config={poolConfigByDivision[d.localId]}
+              onChange={cfg => onPoolConfigChange({ ...poolConfigByDivision, [d.localId]: cfg })}
+            />
+          )}
+        </div>
       ))}
     </div>
   )

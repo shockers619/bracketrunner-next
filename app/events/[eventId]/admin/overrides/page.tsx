@@ -237,8 +237,9 @@ export default function OverridesPage({ params }: { params: { eventId: string } 
   const selectedMatch = matches.find(m => m.id === selectedMatchId) || null
 
   return (
-    <div style={{ maxWidth: '860px', margin: '0 auto', padding: '32px 20px 80px' }}>
-      <p style={{ fontSize: '11px', color: 'var(--ink-muted)', textTransform: 'uppercase', letterSpacing: '0.03em' }}>Director Overrides</p>
+    <div style={{ maxWidth: '860px', margin: '0 auto', padding: '32px 16px 80px' }}>
+      <a href={`/events/${params.eventId}`} style={{ color: 'var(--accent)', fontSize: '13px', textDecoration: 'none' }}>← Back to event</a>
+      <p style={{ fontSize: '11px', color: 'var(--ink-muted)', textTransform: 'uppercase', letterSpacing: '0.03em', marginTop: '12px' }}>Director Overrides</p>
       <h1 style={{ fontSize: '22px', marginBottom: '24px' }}>{eventTitle}</h1>
 
       {error && <div className="error-banner" style={{ marginBottom: '20px' }}>{error}</div>}
@@ -362,7 +363,8 @@ function OverrideTools({ match, teamsById, divisionTeams, onRequestAction }: {
       {/* Score correction */}
       <div>
         <p style={{ fontWeight: 700, fontSize: '13px', marginBottom: '8px' }}>Correct score</p>
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+        {/* wraps so the two score fields + submit don't overflow a phone */}
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
           <input type="number" value={homeScore} onChange={e => setHomeScore(e.target.value)} style={{ width: '70px', padding: '8px' }} />
           <span className="helper-text">vs</span>
           <input type="number" value={awayScore} onChange={e => setAwayScore(e.target.value)} style={{ width: '70px', padding: '8px' }} />
@@ -387,7 +389,7 @@ function OverrideTools({ match, teamsById, divisionTeams, onRequestAction }: {
       {(match.status === 'completed' || match.status === 'pending_confirmation') && (
         <div>
           <p style={{ fontWeight: 700, fontSize: '13px', marginBottom: '8px' }}>Reset match</p>
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             <button
               className="btn-secondary"
               type="button"

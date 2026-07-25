@@ -1,7 +1,8 @@
 'use client'
-import { useMemo, useState } from 'react'
-import type { EventPageData } from '@/lib/eventData'
+import { useMemo, useState, type ReactNode } from 'react'
+import type { EventPageData, MatchRecord } from '@/lib/eventData'
 import { useLiveMatches } from '@/lib/useLiveMatches'
+import Select from '@/components/admin/Select'
 import ScoreboardCard from './ScoreboardCard'
 import BracketTree from './BracketTree'
 import EmptyState from './EmptyState'
@@ -23,6 +24,28 @@ function LiveIndicator({ status }: { status: 'connecting' | 'live' | 'disconnect
       <span className={`h-1.5 w-1.5 rounded-full ${config.dot}`} />
       {config.label}
     </span>
+  )
+}
+
+// A titled group of matches (Now Playing / Up Next / Final). The mono eyebrow
+// + count reads like a broadcast rundown and gives the feed real hierarchy
+// instead of one flat time-sorted list.
+function Section({ label, count, accent, children }: {
+  label: string
+  count: string
+  accent?: boolean
+  children: ReactNode
+}) {
+  return (
+    <section className="flex flex-col gap-2.5">
+      <div className="flex items-baseline justify-between px-1">
+        <h2 className={`font-mono text-[11px] font-medium uppercase tracking-[0.18em] ${accent ? 'text-runner-400' : 'text-white/40'}`}>
+          {label}
+        </h2>
+        <span className="font-mono text-[11px] tabular-nums text-white/30">{count}</span>
+      </div>
+      <div className="flex flex-col gap-2.5">{children}</div>
+    </section>
   )
 }
 
@@ -65,6 +88,26 @@ export default function EventPageClient({ data }: { data: EventPageData }) {
     [filteredMatches]
   )
 
+  const renderCard = (m: MatchRecord) => {
+    const c = courtById.get(m.court_id || '')
+    return (
+      <ScoreboardCard
+        key={m.id}
+        match={m}
+        homeTeam={teamById.get(m.home_team_id || '') || null}
+        awayTeam={teamById.get(m.away_team_id || '') || null}
+        court={c || null}
+        venue={c ? venueById.get(c.venue_id) || null : null}
+      />
+    )
+  }
+
+  // Group the schedule feed by state: live now, then what's next, then results.
+  // Cancelled placeholders (e.g. an unused double-elim reset game) are omitted.
+  const liveMatches = scheduleMatches.filter(m => m.status === 'in_progress' || m.status === 'pending_confirmation')
+  const upcomingMatches = scheduleMatches.filter(m => m.status === 'scheduled')
+  const finalMatches = scheduleMatches.filter(m => m.status === 'completed')
+
   return (
     <div className="min-h-screen bg-base-950 text-white">
       {/* sticky filter bar — wraps on narrow viewports instead of forcing a
@@ -73,22 +116,21 @@ export default function EventPageClient({ data }: { data: EventPageData }) {
       <div className="sticky top-0 z-20 border-b border-white/10 bg-base-950/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-2 px-5 py-3 sm:px-8">
           <LiveIndicator status={liveStatus} />
-          <select
-            value={divisionId}
-            onChange={e => setDivisionId(e.target.value)}
-            className="rounded-lg border border-white/10 bg-base-800 px-3 py-1.5 text-sm text-white transition-colors focus:border-electric-500 focus:outline-none"
-          >
-            {divisions.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-          </select>
+          <div className="w-40 shrink-0">
+            <Select
+              value={divisionId}
+              onChange={setDivisionId}
+              options={divisions.map(d => ({ value: d.id, label: d.name }))}
+            />
+          </div>
 
-          <select
-            value={courtId}
-            onChange={e => setCourtId(e.target.value)}
-            className="rounded-lg border border-white/10 bg-base-800 px-3 py-1.5 text-sm text-white transition-colors focus:border-electric-500 focus:outline-none"
-          >
-            <option value="all">All Courts</option>
-            {courts.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </select>
+          <div className="w-36 shrink-0">
+            <Select
+              value={courtId}
+              onChange={setCourtId}
+              options={[{ value: 'all', label: 'All Courts' }, ...courts.map(c => ({ value: c.id, label: c.name }))]}
+            />
+          </div>
 
           <input
             value={search}
@@ -121,7 +163,7 @@ export default function EventPageClient({ data }: { data: EventPageData }) {
         )}
 
         {divisions.length > 0 && (view === 'schedule' || !hasBracketPhase) && (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-7">
             {scheduleMatches.length === 0 && (
               <EmptyState
                 icon="🔍"
@@ -129,19 +171,21 @@ export default function EventPageClient({ data }: { data: EventPageData }) {
                 body={search.trim() ? `Nothing found for "${search}" — try a different team name or court.` : 'Try a different court, or check back once matches are scheduled.'}
               />
             )}
-            {scheduleMatches.map(m => (
-              <ScoreboardCard
-                key={m.id}
-                match={m}
-                homeTeam={teamById.get(m.home_team_id || '') || null}
-                awayTeam={teamById.get(m.away_team_id || '') || null}
-                court={courtById.get(m.court_id || '') || null}
-                venue={(() => {
-                  const c = courtById.get(m.court_id || '')
-                  return c ? venueById.get(c.venue_id) || null : null
-                })()}
-              />
-            ))}
+            {liveMatches.length > 0 && (
+              <Section label="Now Playing" count={`${liveMatches.length} live`} accent>
+                {liveMatches.map(renderCard)}
+              </Section>
+            )}
+            {upcomingMatches.length > 0 && (
+              <Section label="Up Next" count={String(upcomingMatches.length)}>
+                {upcomingMatches.map(renderCard)}
+              </Section>
+            )}
+            {finalMatches.length > 0 && (
+              <Section label="Final" count={String(finalMatches.length)}>
+                {finalMatches.map(renderCard)}
+              </Section>
+            )}
           </div>
         )}
 

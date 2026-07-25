@@ -2,16 +2,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { randomUUID } from 'crypto'
 import type { IntakeState, DivisionDraft, TeamDraft } from '@/lib/intakeTypes'
+import { orderedForSeeding, DEFAULT_POOL_CONFIG } from '@/lib/intakeTypes'
 import { generateSingleEliminationBracket } from '@/lib/engine/bracket'
 import { generateRoundRobin } from '@/lib/engine/roundRobin'
 import { generateDoubleEliminationBracket } from '@/lib/engine/doubleElimination'
+import { snakeSeedPools, buildAdvancementRules } from '@/lib/engine/poolAssignment'
+import { createPoolsForDivision } from '@/lib/poolSetup'
 import type { Match, Team } from '@/lib/engine/types'
 
 function assignSeeds(teams: TeamDraft[]): { engineTeams: Team[]; clubNameById: Map<string, string | undefined> } {
-  const seeded = teams.filter(t => t.seed != null).sort((a, b) => (a.seed! - b.seed!))
-  const unseeded = teams.filter(t => t.seed == null)
   const clubNameById = new Map<string, string | undefined>()
-  const engineTeams = [...seeded, ...unseeded].map((t, i) => {
+  const engineTeams = orderedForSeeding(teams).map((t, i) => {
     const id = randomUUID()
     clubNameById.set(id, t.clubName)
     return { id, name: t.name, seed: i + 1 }
@@ -46,13 +47,8 @@ function generateMatchesForDivision(division: DivisionDraft, teams: Team[]): { m
       return { matches: generateSingleEliminationBracket(teams, { divisionId: division.localId }) }
     }
     if (division.format === 'double_elimination') {
-      const n = teams.length
-      if ((n & (n - 1)) !== 0) {
-        return {
-          matches: [],
-          warning: `"${division.name}": double elimination currently requires a power-of-2 team count (got ${n}) — schedule not generated. Add/remove teams to reach 2, 4, 8, 16, etc.`,
-        }
-      }
+      // Non-power-of-2 counts are handled by the engine via round-1 byes to the
+      // top seeds (see generateDoubleEliminationBracket) — no guard needed.
       return { matches: generateDoubleEliminationBracket(teams, { divisionId: division.localId }) }
     }
     return {
@@ -163,28 +159,53 @@ export async function POST(req: NextRequest) {
         if (teamsErr) throw new Error(`Adding teams to "${d.name}": ${teamsErr.message}`)
       }
 
-      const { matches, warning } = generateMatchesForDivision(d, seededTeams)
-      if (warning) warnings.push(warning)
+      if (d.format === 'pool_to_bracket') {
+        // Pool play: snake-seed the teams into pools and generate a round-robin
+        // schedule per pool right here at intake, using the config the director
+        // set in the wizard. Resolution to the elimination bracket happens later
+        // (once pool games are played) from the event page.
+        const cfg = body.poolConfigByDivision?.[d.localId]
+        const poolCount = cfg?.poolCount ?? DEFAULT_POOL_CONFIG.poolCount
+        const advancingPerPool = cfg?.advancingPerPool ?? DEFAULT_POOL_CONFIG.advancingPerPool
 
-      if (matches.length > 0) {
-        const remapped = remapMatchIds(matches)
-        const { error: matchesErr } = await supabase.from('matches').insert(
-          remapped.map(m => ({
-            id: m.id,
-            event_id: eventRow!.id,
-            division_id: divisionRow.id,
-            court_id: null,
-            home_team_id: m.homeTeamId,
-            away_team_id: m.awayTeamId,
-            start_time: null,
-            duration_minutes: m.durationMinutes,
-            home_score: m.homeScore,
-            away_score: m.awayScore,
-            status: m.status,
-            bracket_meta: m.bracketMeta,
-          }))
-        )
-        if (matchesErr) throw new Error(`Generating schedule for "${d.name}": ${matchesErr.message}`)
+        if (seededTeams.length < 2) {
+          warnings.push(`"${d.name}": needs at least 2 teams for pool play — pools not generated.`)
+        } else if (poolCount < 1 || poolCount > seededTeams.length) {
+          warnings.push(`"${d.name}": ${poolCount} pool(s) can't be formed from ${seededTeams.length} teams — pools not generated.`)
+        } else {
+          const assignment = snakeSeedPools(seededTeams, poolCount)
+          await createPoolsForDivision(supabase, {
+            eventId: eventRow!.id,
+            divisionId: divisionRow.id,
+            pools: assignment.map(a => ({ name: a.poolName, teamIds: a.teams.map(t => t.id) })),
+            advancementRules: buildAdvancementRules(assignment.map(a => a.teams.length), advancingPerPool),
+            teamNamesById: Object.fromEntries(seededTeams.map(t => [t.id, t.name])),
+          })
+        }
+      } else {
+        const { matches, warning } = generateMatchesForDivision(d, seededTeams)
+        if (warning) warnings.push(warning)
+
+        if (matches.length > 0) {
+          const remapped = remapMatchIds(matches)
+          const { error: matchesErr } = await supabase.from('matches').insert(
+            remapped.map(m => ({
+              id: m.id,
+              event_id: eventRow!.id,
+              division_id: divisionRow.id,
+              court_id: null,
+              home_team_id: m.homeTeamId,
+              away_team_id: m.awayTeamId,
+              start_time: null,
+              duration_minutes: m.durationMinutes,
+              home_score: m.homeScore,
+              away_score: m.awayScore,
+              status: m.status,
+              bracket_meta: m.bracketMeta,
+            }))
+          )
+          if (matchesErr) throw new Error(`Generating schedule for "${d.name}": ${matchesErr.message}`)
+        }
       }
     }
 
