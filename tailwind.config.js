@@ -37,6 +37,15 @@ module.exports = {
           500: '#FF5500',
           600: '#E64A00',
         },
+        // Copper carries the handcrafted warmth. Ember is the hot signal colour
+        // (CTAs, live); copper is the quieter artisan tone for rules, labels and
+        // borders — warmth without tinting the obsidian ground brown.
+        copper: {
+          200: '#EBC49A',
+          300: '#DCA86E',
+          400: '#C8823C',
+          500: '#A96A2C',
+        },
       },
       fontFamily: {
         display: ['Inter', 'system-ui', 'sans-serif'],
