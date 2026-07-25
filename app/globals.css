@@ -274,12 +274,18 @@ button:active { transform: scale(0.98); }
    not be silently outranked by the generic `input` rule earlier in this file or
    by any Tailwind utility, which is the failure mode that produced a border of
    zero width. Scoped to .mk-form so the intake wizard and scorekeeper inputs —
-   which are fine as they are — keep the app's own treatment. */
+   which are fine as they are — keep the app's own treatment.
+
+   Border alpha is 0.34, not the 0.22 these fields carried while they sat on the
+   warm card. Against .mk-form-card (#16151B) 0.22 measures 2.02:1, under the 3:1
+   floor for a UI control's boundary — which is exactly why the fields read as
+   disabled. 0.34 measures 3.11:1. The values didn't change; the ground under
+   them did, and contrast is a relationship, not a number. */
 .mk-form input[type="text"],
 .mk-form input[type="email"],
 .mk-form textarea {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  background: rgba(255, 255, 255, 0.09) !important;
+  border: 1px solid rgba(255, 255, 255, 0.34) !important;
   color: #FFFFFF !important;
   transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
@@ -288,9 +294,9 @@ button:active { transform: scale(0.98); }
 .mk-form input[type="email"]:focus,
 .mk-form textarea:focus {
   border-color: #FF6B2B !important;
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
   outline: none !important;
-  box-shadow: 0 0 0 3px rgba(255, 107, 43, 0.2);
+  box-shadow: 0 0 0 3px rgba(255, 107, 43, 0.25);
 }
 /* The real complaint was that placeholders read as pre-filled data. That's a
    RELATIVE problem: a bright placeholder on a dark fill looks like a value.
@@ -305,8 +311,8 @@ button:active { transform: scale(0.98); }
 .mk-form input[type="text"]:hover,
 .mk-form input[type="email"]:hover,
 .mk-form textarea:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
-  border-color: rgba(255, 255, 255, 0.34) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.46) !important;
 }
 
 /* Warm variant for the cards carrying the handcrafted pitch. The border sits
