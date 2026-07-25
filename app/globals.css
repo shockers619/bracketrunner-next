@@ -5,6 +5,11 @@
 /* Inter at heavy weights carries both the product and the marketing site — the
    warmth lives in the words, the precision in the type. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap');
+/* Caveat is used ONLY for margin annotations — a person's handwriting on top of
+   a precise technical document. This is the "hand-built racing bike" read:
+   engineered product, human marks. Never use it for headlines or body copy;
+   that's what made the earlier serif pass feel like a coffee shop. */
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap');
 
 :root {
   --bg: #0A0B0D;
@@ -131,6 +136,28 @@ button:active { transform: scale(0.98); }
 /* ---- Marketing surface ----
    Obsidian + precision. The warmth is carried entirely by the copy; the visual
    wrapper should read like instrument panel, not stationery. */
+
+/* Handwritten margin annotation. Copper, slightly tilted, deliberately small —
+   it should read as someone's note in the margin, not as a design element. */
+.mk-hand {
+  font-family: 'Caveat', 'Bradley Hand', cursive;
+  font-weight: 600;
+  color: #DCA86E;
+  line-height: 1.25;
+}
+
+/* Paper grain over the whole page. On a dark ground this is nearly invisible
+   per-pixel, but its absence is exactly what makes large dark fields read as
+   sterile machine output. */
+.mk-paper::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.55;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+}
 
 /* Faint technical grid. Almost subliminal — it reads as engineered rather than
    decorated, and gives the large dark fields a sense of structure. */

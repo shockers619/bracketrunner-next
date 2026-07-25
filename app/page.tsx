@@ -8,6 +8,7 @@ import {
 import {
   FormatsIcon, OfflineIcon, NoAdsIcon, ScheduleIcon, HandBuiltIcon, LinkIcon,
 } from '@/components/marketing/BentoIcons'
+import { CircleScribble, ArrowDownLeft, ArrowDownRight } from '@/components/marketing/HandDrawn'
 
 export const metadata: Metadata = {
   title: 'BracketRunner — Flawless event schedules & live scores, handcrafted for you',
@@ -71,7 +72,7 @@ function Bento({ icon, title, body, wide, warm, children }: {
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-obsidian-950 text-white antialiased">
+    <div className="mk-paper min-h-screen bg-obsidian-950 text-white antialiased">
       {/* ---- Nav ---- */}
       <header className="sticky top-0 z-30 border-b border-white/[0.07] bg-obsidian-950/85 backdrop-blur-xl">
         <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
@@ -89,57 +90,62 @@ export default function LandingPage() {
         </nav>
       </header>
 
-      {/* ---- Hero ---- */}
+      {/* ---- Hero ----
+          Asymmetric on purpose. A centered stack of headline → subhead → CTA →
+          screenshot is the exact skeleton every SaaS template uses, and no
+          amount of warm colour rescues it. Text holds the left, the product
+          breaks out to the right at an angle. */}
       <section className="mk-grid relative overflow-hidden border-b border-white/[0.07]">
-        {/* Tight and low-opacity on purpose: a wide warm bloom tints the
-            obsidian brown, which is the look this palette is correcting. */}
-        <div className="mk-bloom pointer-events-none absolute left-1/2 top-[-16rem] h-[34rem] w-[46rem] -translate-x-1/2" />
-        <div className="relative mx-auto max-w-6xl px-5 pb-14 pt-12 text-center sm:px-8 sm:pb-16 sm:pt-16">
-          {/* Warm badge — one of the few places the "made by people" claim gets
-              a visual signature rather than just words. */}
-          <span className="inline-flex items-center gap-2.5 rounded-full border border-ember-500/30 bg-gradient-to-b from-ember-500/[0.16] to-ember-500/[0.04] px-4 py-1.5 text-[12.5px] font-semibold text-copper-200 shadow-[inset_0_1px_0_rgba(255,180,130,0.25),0_0_28px_-14px_rgba(255,107,43,0.9)]">
-            <span className="mk-dot-live h-1.5 w-1.5 animate-pulseLive rounded-full bg-ember-500" />
-            Run by people, not a portal
-          </span>
-
-          <h1 className="mx-auto mt-7 max-w-4xl text-[2.5rem] font-extrabold leading-[1.06] tracking-[-0.035em] sm:text-[3.9rem]">
-            Flawless event schedules &amp; live scores.{' '}
-            {/* Two spans on purpose: .mk-underline paints a background-image,
-                which would otherwise be the SAME property bg-clip-text uses to
-                fill the glyphs — combining them on one element makes the text
-                vanish. Outer draws the stroke, inner draws the gradient text. */}
-            <span className="mk-underline">
-              <span className="bg-gradient-to-r from-copper-200 via-ember-300 to-ember-500 bg-clip-text text-transparent">
-                Handcrafted for you.
-              </span>
+        <div className="mk-bloom pointer-events-none absolute left-[8%] top-[-18rem] h-[36rem] w-[44rem]" />
+        <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 pb-16 pt-12 sm:px-8 sm:pb-20 sm:pt-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
+          <div className="relative z-10">
+            <span className="inline-flex items-center gap-2.5 rounded-full border border-ember-500/30 bg-gradient-to-b from-ember-500/[0.16] to-ember-500/[0.04] px-4 py-1.5 text-[12.5px] font-semibold text-copper-200 shadow-[inset_0_1px_0_rgba(255,180,130,0.25),0_0_28px_-14px_rgba(255,107,43,0.9)]">
+              <span className="mk-dot-live h-1.5 w-1.5 animate-pulseLive rounded-full bg-ember-500" />
+              Run by people, not a portal
             </span>
-          </h1>
 
-          <p className="mx-auto mt-6 max-w-2xl text-[17.5px] leading-[1.6] text-white/60">
-            Showcases, pool play, or championship brackets — hand us your team list and venue rules. We build your
-            entire event by hand and deliver a live, courtside-ready platform for your directors, coaches, and parents.
-          </p>
-
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <a
-              href="#demo"
-              className="mk-glow rounded-xl bg-ember-500 px-8 py-4 text-[15px] font-bold text-obsidian-950 transition-transform hover:-translate-y-0.5"
-            >
-              Tell us about your event
-            </a>
-          </div>
-
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-white/45">
-            {['100% managed concierge setup', 'Built-in offline sync', 'Zero ad clutter'].map((b, i) => (
-              <span key={b} className="flex items-center gap-2">
-                {i > 0 && <span className="hidden h-1 w-1 rounded-full bg-white/20 sm:block" />}
-                {b}
+            <h1 className="mt-7 text-[2.6rem] font-extrabold leading-[1.04] tracking-[-0.035em] sm:text-[3.6rem]">
+              Flawless event schedules &amp; live scores.{' '}
+              {/* The ink circle is absolutely positioned around the phrase and
+                  intentionally doesn't close — a drawn mark, not a border. */}
+              <span className="relative inline-block">
+                <span className="bg-gradient-to-r from-copper-200 via-ember-300 to-ember-500 bg-clip-text text-transparent">
+                  Handcrafted for you.
+                </span>
+                <CircleScribble className="pointer-events-none absolute -inset-x-4 -inset-y-3 h-[calc(100%+1.5rem)] w-[calc(100%+2rem)] text-ember-500/55" />
               </span>
-            ))}
+            </h1>
+
+            <p className="mt-7 max-w-xl text-[17px] leading-[1.65] text-white/60">
+              Showcases, pool play, or championship brackets — hand us your team list and venue rules. We build your
+              entire event by hand and deliver a live, courtside-ready platform for your directors, coaches, and parents.
+            </p>
+
+            <div className="mt-9 flex flex-wrap items-center gap-5">
+              <a
+                href="#demo"
+                className="mk-glow rounded-xl bg-ember-500 px-8 py-4 text-[15px] font-bold text-obsidian-950 transition-transform hover:-translate-y-0.5"
+              >
+                Tell us about your event
+              </a>
+              {/* Handwritten aside next to the CTA — the first human mark you hit. */}
+              <span className="mk-hand max-w-[11rem] text-[19px] leading-tight">
+                a real person replies, usually same day
+              </span>
+            </div>
+
+            <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-white/45">
+              {['100% managed concierge setup', 'Built-in offline sync', 'Zero ad clutter'].map((b, i) => (
+                <span key={b} className="flex items-center gap-2">
+                  {i > 0 && <span className="hidden h-1 w-1 rounded-full bg-white/20 sm:block" />}
+                  {b}
+                </span>
+              ))}
+            </div>
           </div>
 
-          {/* The product, anchored directly beneath the CTA. */}
-          <div className="mt-14">
+          {/* Product breaks the grid: tilted, oversized, allowed to bleed. */}
+          <div className="relative lg:-mr-16 xl:-mr-24">
             <PhoneShowcase />
           </div>
         </div>
@@ -170,6 +176,16 @@ export default function LandingPage() {
               No settings to learn, no templates to wrestle into shape. The whole point is that you don&apos;t
               touch the software unless you want to.
             </p>
+
+            {/* A signed note — the single clearest "a person made this" mark on
+                the page. Tilted and offset so it reads as pinned on, not laid out. */}
+            <div className="relative mt-10 max-w-sm -rotate-1 rounded-xl border border-copper-400/25 bg-copper-400/[0.05] px-6 py-5">
+              <ArrowDownLeft className="absolute -right-2 -top-9 hidden rotate-[16deg] text-copper-400/50 lg:block" />
+              <p className="mk-hand text-[21px] leading-[1.35] text-copper-200">
+                &ldquo;If something breaks at 8am on a Saturday, you get a person — not a ticket number.&rdquo;
+              </p>
+              <p className="mk-hand mt-3 text-[18px] text-copper-300/75">— the two of us who build these</p>
+            </div>
           </div>
           <div className="flex flex-col gap-8">
             <Step

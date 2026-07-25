@@ -1,3 +1,5 @@
+import { ArrowDownRight } from './HandDrawn'
+
 // The product, anchored in the hero. Shows BOTH views — the courtside schedule
 // a parent opens and the bracket a director runs — because one phone alone
 // reads as a bracket app.
@@ -149,14 +151,29 @@ export default function PhoneShowcase() {
   return (
     <div className="relative">
       <div className="mk-bloom pointer-events-none absolute left-1/2 top-1/2 h-[24rem] w-[38rem] -translate-x-1/2 -translate-y-1/2" />
-      <div className="relative flex flex-wrap items-start justify-center gap-8 sm:gap-12">
-        <div>
-          <Phone />
-          <Caption>What families see</Caption>
-        </div>
-        <div className="hidden sm:block">
+
+      {/* Overlapped and tilted rather than sitting side by side in a neat row.
+          The bracket sits behind and above; the phone overlaps it in front. */}
+      <div className="relative flex justify-center pb-10 pt-6 lg:block lg:h-[30rem]">
+        <div className="hidden lg:absolute lg:right-0 lg:top-0 lg:block lg:w-[22rem] lg:rotate-[3deg]">
           <BracketPanel />
           <Caption>What you run</Caption>
+        </div>
+
+        <div className="relative z-10 -rotate-[4deg] lg:absolute lg:left-0 lg:top-16">
+          <Phone />
+          <Caption>What families see</Caption>
+
+          {/* Ink annotation pointing up at the phone. Anchored to the phone's
+              bottom-left, which is the one genuinely empty pocket in this
+              layout — sitting it beside the live card collided with the
+              headline. */}
+          <div className="pointer-events-none absolute -bottom-4 -left-6 hidden -translate-x-full text-right lg:block">
+            <span className="mk-hand block w-[10rem] text-[19px] leading-tight">
+              scores land here the second they’re entered
+            </span>
+            <ArrowDownRight className="ml-auto mr-2 mt-1 -scale-y-100 rotate-[12deg] text-copper-400/70" />
+          </div>
         </div>
       </div>
     </div>
