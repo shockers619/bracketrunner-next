@@ -51,16 +51,16 @@ export default function DemoRequestForm() {
     <form onSubmit={submit} className="mk-form mk-card mk-card-warm rounded-2xl p-6 sm:p-8">
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Your name" required>
-          <input required value={name} onChange={e => setName(e.target.value)} placeholder="Jordan Reyes" />
+          <input required type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Jordan Reyes" />
         </Field>
         <Field label="Email" required>
           <input required type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@club.com" />
         </Field>
         <Field label="Club or organization">
-          <input value={organization} onChange={e => setOrganization(e.target.value)} placeholder="Riverside Elite" />
+          <input type="text" value={organization} onChange={e => setOrganization(e.target.value)} placeholder="Riverside Elite" />
         </Field>
         <Field label="Sport">
-          <input value={sport} onChange={e => setSport(e.target.value)} placeholder="Basketball" />
+          <input type="text" value={sport} onChange={e => setSport(e.target.value)} placeholder="Basketball" />
         </Field>
       </div>
 

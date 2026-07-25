@@ -258,7 +258,11 @@ button:active { transform: scale(0.98); }
    rather than as disabled wells on a dark card. */
 .mk-form input, .mk-form textarea {
   background: rgba(255, 255, 255, 0.13);
-  border-color: rgba(255, 255, 255, 0.3);
+  /* Full shorthand, deliberately. This previously set only border-color and
+     inherited width/style from the generic `input` rule — one upstream change
+     (or Tailwind preflight's border-width:0) and you get a coloured border of
+     zero width, which renders as no outline at all. */
+  border: 1px solid rgba(255, 255, 255, 0.32);
   transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 /* The real complaint was that placeholders read as pre-filled data. That's a
@@ -275,9 +279,11 @@ button:active { transform: scale(0.98); }
   border-color: rgba(255, 255, 255, 0.34);
 }
 .mk-form input:focus, .mk-form textarea:focus {
-  border-color: rgba(255, 107, 43, 0.6);
-  background: rgba(255, 107, 43, 0.07);
-  box-shadow: 0 0 0 3px rgba(255, 107, 43, 0.16);
+  /* Solid accent on focus, per spec — not a translucent tint. */
+  border-color: #FF6B2B;
+  background: rgba(255, 107, 43, 0.08);
+  box-shadow: 0 0 0 3px rgba(255, 107, 43, 0.18);
+  outline: none;
 }
 
 /* Warm variant for the cards carrying the handcrafted pitch. The border sits
