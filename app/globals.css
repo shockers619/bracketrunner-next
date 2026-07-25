@@ -256,20 +256,27 @@ button:active { transform: scale(0.98); }
 
 /* Marketing form fields sit lighter than the app's, so they read as inviting
    rather than as disabled wells on a dark card. */
-/* Inputs are RECESSED, not lightened.
-   These sit on a warm, relatively light card. Every previous attempt raised the
-   fill toward white, which shrank the gap between field and card and made the
-   fields merge into the surface — the exact "pre-filled box" read. A field cut
-   DOWN into the card, with a crisp rim and an inner shadow, is unmistakably an
-   empty input. Direction of contrast matters more than its amount. */
-.mk-form input, .mk-form textarea {
-  background: rgba(0, 0, 0, 0.38);
-  /* Full shorthand, deliberately: setting only border-color and inheriting
-     width from the generic `input` rule risks a coloured border of zero width,
-     which renders as no outline at all. */
-  border: 1px solid rgba(255, 255, 255, 0.26);
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.45);
+/* Field styling to spec. !important is used deliberately here: these rules must
+   not be silently outranked by the generic `input` rule earlier in this file or
+   by any Tailwind utility, which is the failure mode that produced a border of
+   zero width. Scoped to .mk-form so the intake wizard and scorekeeper inputs —
+   which are fine as they are — keep the app's own treatment. */
+.mk-form input[type="text"],
+.mk-form input[type="email"],
+.mk-form textarea {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  color: #FFFFFF !important;
   transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.mk-form input[type="text"]:focus,
+.mk-form input[type="email"]:focus,
+.mk-form textarea:focus {
+  border-color: #FF6B2B !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(255, 107, 43, 0.2);
 }
 /* The real complaint was that placeholders read as pre-filled data. That's a
    RELATIVE problem: a bright placeholder on a dark fill looks like a value.
@@ -278,18 +285,14 @@ button:active { transform: scale(0.98); }
 .mk-form input::placeholder, .mk-form textarea::placeholder {
   color: rgba(255, 255, 255, 0.3);
 }
-/* Hover matters here: it signals the field is interactive before the click,
-   which is what actually makes a form feel approachable. */
-.mk-form input:hover, .mk-form textarea:hover {
-  background: rgba(0, 0, 0, 0.3);
-  border-color: rgba(255, 255, 255, 0.4);
-}
-.mk-form input:focus, .mk-form textarea:focus {
-  /* Solid accent on focus, per spec — not a translucent tint. */
-  border-color: #FF6B2B;
-  background: rgba(0, 0, 0, 0.3);
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4), 0 0 0 3px rgba(255, 107, 43, 0.22);
-  outline: none;
+/* Hover signals the field is interactive before the click. Needs !important
+   too, otherwise the base rule above (which is !important) outranks it and
+   hover does nothing. */
+.mk-form input[type="text"]:hover,
+.mk-form input[type="email"]:hover,
+.mk-form textarea:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.34) !important;
 }
 
 /* Warm variant for the cards carrying the handcrafted pitch. The border sits
