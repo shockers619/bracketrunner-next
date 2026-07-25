@@ -55,6 +55,31 @@ export default function StepEvent({
           {errors.endDate && <p className="field-error">{errors.endDate}</p>}
         </div>
       </div>
+
+      {/* The scheduler places every game inside these hours — without them it
+          has no window to work in. */}
+      <div style={{ marginTop: '18px' }}>
+        <label>Daily playing hours</label>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '10px', alignItems: 'center' }}>
+          <input
+            aria-label="First game no earlier than"
+            type="time"
+            value={value.dailyStartTime}
+            onChange={e => onChange({ ...value, dailyStartTime: e.target.value })}
+          />
+          <span className="helper-text" style={{ marginTop: 0 }}>to</span>
+          <input
+            aria-label="Last game must end by"
+            type="time"
+            value={value.dailyEndTime}
+            onChange={e => onChange({ ...value, dailyEndTime: e.target.value })}
+          />
+        </div>
+        <p className="helper-text">
+          First game no earlier than, last game finished by — applied to each day of the event.
+        </p>
+        {errors.dailyHours && <p className="field-error">{errors.dailyHours}</p>}
+      </div>
     </div>
   )
 }

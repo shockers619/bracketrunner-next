@@ -45,9 +45,11 @@ export async function createPoolsForDivision(
     pools: PoolInput[]
     advancementRules: AdvancementRuleInput[]
     teamNamesById: Record<string, string>
+    /** Division's configured game length; overrides the generator's placeholder. */
+    gameDurationMinutes?: number
   }
 ): Promise<{ poolIds: string[] }> {
-  const { eventId, divisionId, pools, advancementRules, teamNamesById } = args
+  const { eventId, divisionId, pools, advancementRules, teamNamesById, gameDurationMinutes } = args
   const poolIds: string[] = []
 
   for (const pool of pools) {
@@ -77,7 +79,7 @@ export async function createPoolsForDivision(
           home_team_id: m.homeTeamId,
           away_team_id: m.awayTeamId,
           start_time: null,
-          duration_minutes: m.durationMinutes,
+          duration_minutes: gameDurationMinutes ?? m.durationMinutes,
           home_score: m.homeScore,
           away_score: m.awayScore,
           status: m.status,

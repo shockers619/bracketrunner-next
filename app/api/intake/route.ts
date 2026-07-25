@@ -113,6 +113,8 @@ export async function POST(req: NextRequest) {
         sport: body.event.sport,
         start_date: body.event.startDate,
         end_date: body.event.endDate,
+        daily_start_time: body.event.dailyStartTime || '08:00',
+        daily_end_time: body.event.dailyEndTime || '20:00',
       })
       .select()
       .single()
@@ -127,6 +129,14 @@ export async function POST(req: NextRequest) {
         .single()
       if (venueErr) throw new Error(`Creating venue "${v.name}": ${venueErr.message}`)
 
+      // Record that THIS event is played here. Venues are shared network-wide,
+      // so the association has to live in a join table — without it the
+      // scheduler has no way to know which surfaces the event may use.
+      const { error: linkErr } = await supabase
+        .from('event_venues')
+        .insert({ event_id: eventRow!.id, venue_id: venueRow.id })
+      if (linkErr) throw new Error(`Linking venue "${v.name}" to the event: ${linkErr.message}`)
+
       for (const c of v.courts) {
         const { error: courtErr } = await supabase
           .from('courts')
@@ -138,7 +148,14 @@ export async function POST(req: NextRequest) {
     for (const d of body.divisions) {
       const { data: divisionRow, error: divErr } = await supabase
         .from('divisions')
-        .insert({ event_id: eventRow!.id, name: d.name, format: d.format, min_rest_minutes: d.minRestMinutes })
+        .insert({
+          event_id: eventRow!.id,
+          name: d.name,
+          format: d.format,
+          min_rest_minutes: d.minRestMinutes,
+          game_duration_minutes: d.gameDurationMinutes,
+          buffer_minutes: d.bufferMinutes,
+        })
         .select()
         .single()
       if (divErr) throw new Error(`Creating division "${d.name}": ${divErr.message}`)
@@ -180,6 +197,7 @@ export async function POST(req: NextRequest) {
             pools: assignment.map(a => ({ name: a.poolName, teamIds: a.teams.map(t => t.id) })),
             advancementRules: buildAdvancementRules(assignment.map(a => a.teams.length), advancingPerPool),
             teamNamesById: Object.fromEntries(seededTeams.map(t => [t.id, t.name])),
+            gameDurationMinutes: d.gameDurationMinutes,
           })
         }
       } else {
@@ -197,7 +215,9 @@ export async function POST(req: NextRequest) {
               home_team_id: m.homeTeamId,
               away_team_id: m.awayTeamId,
               start_time: null,
-              duration_minutes: m.durationMinutes,
+              // The generators emit a placeholder 60; the division's configured
+              // game length is the real value the scheduler will work from.
+              duration_minutes: d.gameDurationMinutes,
               home_score: m.homeScore,
               away_score: m.awayScore,
               status: m.status,

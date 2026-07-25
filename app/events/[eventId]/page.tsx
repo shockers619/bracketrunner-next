@@ -4,6 +4,7 @@ import { useAuthTenant } from '@/lib/useAuthTenant'
 import { supabase } from '@/lib/supabase'
 import ShareCard from '@/components/event/ShareCard'
 import ActionTile from '@/components/event/ActionTile'
+import GenerateSchedule from '@/components/event/GenerateSchedule'
 
 interface DivisionRow {
   id: string
@@ -84,6 +85,8 @@ export default function EventDetailPage({ params }: { params: { eventId: string 
       </p>
 
       {event?.slug && <ShareCard slug={event.slug} />}
+
+      <GenerateSchedule eventId={params.eventId} />
 
       {/* Run-the-event actions. These pages already existed but were reachable
           only by typing their URLs by hand — a real hole for a director

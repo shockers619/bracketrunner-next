@@ -4,6 +4,10 @@ export interface EventDetails {
   sport: string
   startDate: string
   endDate: string
+  /** Daily operating window, "HH:MM". The scheduler places every match inside
+   *  this window on each day of the event. */
+  dailyStartTime: string
+  dailyEndTime: string
 }
 
 export interface DivisionDraft {
@@ -11,6 +15,10 @@ export interface DivisionDraft {
   name: string
   format: 'single_elimination' | 'double_elimination' | 'pool_to_bracket' | 'round_robin'
   minRestMinutes: number
+  /** Wall-clock minutes a match occupies the playing surface. */
+  gameDurationMinutes: number
+  /** Turnaround on the surface between matches. */
+  bufferMinutes: number
 }
 
 export interface CourtDraft {
@@ -54,7 +62,7 @@ export interface IntakeState {
 export function emptyIntakeState(): IntakeState {
   return {
     tenantId: '',
-    event: { title: '', slug: '', sport: '', startDate: '', endDate: '' },
+    event: { title: '', slug: '', sport: '', startDate: '', endDate: '', dailyStartTime: '08:00', dailyEndTime: '20:00' },
     divisions: [],
     venues: [],
     teamsByDivision: {},

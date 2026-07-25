@@ -59,6 +59,11 @@ export default function IntakePage() {
       if (state.event.startDate && state.event.endDate && state.event.endDate < state.event.startDate) {
         errs.endDate = 'End date must be on or after the start date'
       }
+      // A zero-length or inverted playing window gives the scheduler nowhere to
+      // put a game, so catch it here rather than at schedule time.
+      if (state.event.dailyStartTime && state.event.dailyEndTime && state.event.dailyEndTime <= state.event.dailyStartTime) {
+        errs.dailyHours = 'Playing hours must end after they start'
+      }
     }
     return errs
   }
@@ -158,7 +163,7 @@ export default function IntakePage() {
           <StepDivisions
             divisions={state.divisions}
             onChange={divisions => setState({ ...state, divisions })}
-            error={state.divisions.length === 0 ? undefined : undefined}
+            sport={state.event.sport}
           />
         )}
         {step === 2 && <StepVenues venues={state.venues} onChange={venues => setState({ ...state, venues })} />}

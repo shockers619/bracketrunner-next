@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import type { MatchRecord, TeamRecord, CourtRecord, VenueRecord } from '@/lib/eventData'
+import { formatVenueTime } from '@/lib/engine/scheduleInputs'
 
 function TeamRow({
   team, score, emphasize, isLive, showScore,
@@ -90,9 +91,9 @@ export default function ScoreboardCard({
     prevStatus.current = match.status
   }, [match.status])
 
-  const time = match.start_time
-    ? new Date(match.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-    : 'TBD'
+  // Venue-local wall clock, NOT the viewer's timezone — a 9am game in
+  // Pennsylvania reads as 9am to a grandparent watching from Portland.
+  const time = formatVenueTime(match.start_time)
   const statusLabel = isLive ? 'Live' : isPending ? 'Confirming' : isCompleted ? 'Final' : time
   const statusColor = isLive ? 'text-runner-400' : isCompleted ? 'text-electric-400/90' : 'text-white/45'
 
