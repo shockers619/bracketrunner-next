@@ -5,6 +5,9 @@ import ComparisonTable from '@/components/marketing/ComparisonTable'
 import {
   OfflineGraphic, NoAdsGraphic, CourtTimelineGraphic, FormatChipsGraphic, HandBuiltGraphic,
 } from '@/components/marketing/BentoGraphics'
+import {
+  FormatsIcon, OfflineIcon, NoAdsIcon, ScheduleIcon, HandBuiltIcon, LinkIcon,
+} from '@/components/marketing/BentoIcons'
 
 export const metadata: Metadata = {
   title: 'BracketRunner — Flawless event schedules & live scores, handcrafted for you',
@@ -45,17 +48,23 @@ function Step({ n, title, body }: { n: string; title: string; body: string }) {
   )
 }
 
-/** Bento tile. `wide` spans two columns and `warm` gets the ember-tinted glass
- *  treatment, so the grid reads composed and lit rather than as identical
- *  monochrome boxes. */
-function Bento({ title, body, wide, warm, children }: {
-  title: string; body: string; wide?: boolean; warm?: boolean; children: React.ReactNode
+/** Bento tile with a structured header: icon chip, title, and a hairline rule
+ *  separating the header from the body. `wide` spans two columns and `warm`
+ *  takes the ember surface, so the grid has varied weight instead of being a
+ *  row of identical boxes. */
+function Bento({ icon, title, body, wide, warm, children }: {
+  icon: React.ReactNode; title: string; body: string
+  wide?: boolean; warm?: boolean; children: React.ReactNode
 }) {
   return (
-    <div className={`mk-card ${warm ? 'mk-card-warm' : ''} flex flex-col overflow-hidden rounded-2xl p-6 ${wide ? 'md:col-span-2' : ''}`}>
-      <h3 className="text-[1.05rem] font-bold tracking-tight text-white">{title}</h3>
-      <p className="mt-2 max-w-lg text-[14.5px] leading-[1.6] text-white/60">{body}</p>
-      <div className="mt-5 flex flex-1 items-end">{children}</div>
+    <div className={`mk-card ${warm ? 'mk-card-warm' : ''} flex flex-col rounded-2xl p-6 ${wide ? 'md:col-span-2' : ''}`}>
+      <div className="relative flex items-center gap-3.5">
+        <span className="mk-icon">{icon}</span>
+        <h3 className="text-[1.05rem] font-bold leading-snug tracking-tight text-white">{title}</h3>
+      </div>
+      <div className={`relative mt-5 h-px w-full ${warm ? 'bg-ember-500/25' : 'bg-white/[0.09]'}`} />
+      <p className="relative mt-4 max-w-lg text-[14.5px] leading-[1.65] text-white/60">{body}</p>
+      <div className="relative mt-6 flex flex-1 items-end">{children}</div>
     </div>
   )
 }
@@ -193,6 +202,7 @@ export default function LandingPage() {
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             <Bento
               wide warm
+              icon={<FormatsIcon />}
               title="Every format a real weekend throws at you."
               body="Showcases, round robins, pool play into bracket, single and double elimination — including the odd team counts that break other tools — plus multi-venue events and custom game guarantees."
             >
@@ -200,6 +210,7 @@ export default function LandingPage() {
             </Bento>
 
             <Bento
+              icon={<NoAdsIcon />}
               title="Zero ad clutter."
               body="Nothing sits between a parent and their kid's game."
             >
@@ -207,6 +218,7 @@ export default function LandingPage() {
             </Bento>
 
             <Bento
+              icon={<OfflineIcon />}
               title="Scores survive a dead gym Wi-Fi."
               body="When the signal drops mid-game, scores keep saving on the device and sync themselves the moment it comes back — in the order they were entered."
             >
@@ -215,6 +227,7 @@ export default function LandingPage() {
 
             <Bento
               wide
+              icon={<ScheduleIcon />}
               title="Courts, times, and rest — solved before you arrive."
               body="We lay every game across your courts and hours, respect the rest a team needs between games, and keep bracket rounds in the right order. If it genuinely won't fit, we tell you what to change instead of quietly running past closing time."
             >
@@ -223,6 +236,7 @@ export default function LandingPage() {
 
             <Bento
               wide warm
+              icon={<HandBuiltIcon />}
               title="Checked by a person before anyone sees it."
               body="Every event is built and verified by hand. You get a walkthrough before it goes public, and someone reachable while it runs."
             >
@@ -230,6 +244,7 @@ export default function LandingPage() {
             </Bento>
 
             <Bento
+              icon={<LinkIcon />}
               title="A link, not a login."
               body="Families open a URL and see the schedule. No account, no app, no password reset on a Saturday morning."
             >

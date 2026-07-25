@@ -25,7 +25,7 @@ function ScoreRow({ team, score, seed, leading, blue }: {
   team: string; score: string; seed: string; leading?: boolean; blue?: boolean
 }) {
   return (
-    <div className={`flex items-center justify-between gap-2.5 px-3 py-2.5 ${leading ? 'bg-white/[0.07]' : ''}`}>
+    <div className={`flex items-center justify-between gap-2.5 px-3 py-2.5 ${leading ? 'bg-white/[0.1]' : ''}`}>
       <div className="flex min-w-0 flex-1 items-center gap-2.5">
         <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg text-[11px] font-extrabold text-obsidian-950 shadow-lg ${
           blue ? 'bg-gradient-to-br from-sky-200 to-sky-500' : 'bg-gradient-to-br from-copper-200 to-copper-400'
@@ -33,7 +33,7 @@ function ScoreRow({ team, score, seed, leading, blue }: {
           {team[0]}
         </span>
         <span className="shrink-0 rounded bg-white/10 px-1.5 py-0.5 font-mono text-[9px] font-semibold text-white/55">{seed}</span>
-        <span className={`truncate text-[13.5px] ${leading ? 'font-bold text-white' : 'font-medium text-white/80'}`}>{team}</span>
+        <span className={`truncate text-[13.5px] ${leading ? 'font-bold text-white' : 'font-medium text-white/85'}`}>{team}</span>
       </div>
       <span className={`font-mono text-[20px] font-extrabold tabular-nums tracking-tight ${
         leading ? (blue ? 'text-electric-400' : 'text-ember-400') : 'text-white/45'
@@ -47,7 +47,7 @@ function ScoreRow({ team, score, seed, leading, blue }: {
 function Phone() {
   return (
     <div className="relative w-[262px] shrink-0 rounded-[2.4rem] border border-white/[0.16] bg-gradient-to-b from-obsidian-700 via-obsidian-800 to-obsidian-900 p-[9px] shadow-[0_50px_90px_-30px_rgba(0,0,0,1),0_0_70px_-16px_rgba(255,107,43,0.35),0_0_0_1px_rgba(255,255,255,0.05)]">
-      <div className="overflow-hidden rounded-[1.95rem] border border-white/[0.06] bg-obsidian-950">
+      <div className="overflow-hidden rounded-[1.95rem] border border-white/[0.06] bg-[#0B0A0F]">
         <div className="flex items-center justify-between px-5 pb-1.5 pt-3 font-mono text-[10px] font-medium text-white/55">
           <span>9:41</span>
           <span className="flex items-center gap-1"><span className="tracking-tighter">••••</span> 5G</span>
@@ -88,7 +88,7 @@ function Phone() {
             <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.18em] text-white/45">Final</span>
           </div>
 
-          <div className="overflow-hidden rounded-xl border border-white/[0.11] bg-white/[0.035]">
+          <div className="overflow-hidden rounded-xl border border-white/[0.14] bg-white/[0.06]">
             <div className="flex items-center justify-between border-b border-white/[0.09] px-3 py-2">
               <CourtTag>Court 1</CourtTag>
               <CourtTag tone="blue">Pool A</CourtTag>

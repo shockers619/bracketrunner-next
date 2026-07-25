@@ -22,7 +22,7 @@ export function OfflineGraphic() {
     </svg>
   )
   return (
-    <div className="flex w-full flex-wrap items-center gap-2.5 rounded-xl border border-white/10 bg-obsidian-950/70 px-4 py-4">
+    <div className="flex w-full flex-wrap items-center gap-2.5 mk-well px-4 py-4">
       {chip('Live', 'live', true)}
       {arrow}
       {chip('Offline · 1 queued', 'warn')}
@@ -35,7 +35,7 @@ export function OfflineGraphic() {
 /** Ad slots, struck through — states the promise without a stock icon. */
 export function NoAdsGraphic() {
   return (
-    <div className="w-full rounded-xl border border-white/10 bg-obsidian-950/70 p-3">
+    <div className="w-full mk-well p-3">
       <div className="flex flex-col gap-2">
         {['Banner ad', 'Sponsored'].map(label => (
           <div
@@ -66,7 +66,7 @@ export function CourtTimelineGraphic() {
     live: 'bg-ember-500/80',
   }
   return (
-    <div className="w-full rounded-xl border border-white/10 bg-obsidian-950/70 p-4">
+    <div className="w-full mk-well p-4">
       <div className="mb-2.5 flex justify-between font-mono text-[9px] uppercase tracking-[0.12em] text-white/30">
         <span>8:00</span><span>12:00</span><span>4:00</span>
       </div>
@@ -119,7 +119,7 @@ export function FormatChipsGraphic() {
 export function HandBuiltGraphic() {
   const items = ['Divisions & seeding', 'Pools and brackets', 'Court assignments', 'Rest between games']
   return (
-    <div className="w-full rounded-xl border border-white/10 bg-obsidian-950/70 p-4">
+    <div className="w-full mk-well p-4">
       <div className="flex flex-col gap-2.5">
         {items.map(i => (
           <div key={i} className="flex items-center gap-2.5">
