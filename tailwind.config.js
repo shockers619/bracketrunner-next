@@ -23,6 +23,20 @@ module.exports = {
           500: '#F97316',   // matches the logo's orange
           600: '#EA580C',
         },
+        // Marketing surface: obsidian ground + a hotter, glowing ember accent
+        // than the product's runner orange.
+        obsidian: {
+          950: '#0B0C10',
+          900: '#0D0E12',
+          800: '#121419',
+          700: '#181B22',
+        },
+        ember: {
+          300: '#FF8A4C',
+          400: '#FF6B23',
+          500: '#FF5500',
+          600: '#E64A00',
+        },
       },
       fontFamily: {
         display: ['Inter', 'system-ui', 'sans-serif'],
