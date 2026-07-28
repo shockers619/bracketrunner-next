@@ -1,10 +1,11 @@
 /** The brand lockup: the favicon's bracket glyph, the wordmark, then the same
  *  glyph mirrored. Both marks' stems point inward at the name.
  *
- *  The path here is character-for-character the one in app/icon.svg — if either
- *  changes, change both, or the tab icon and the logo drift apart. The viewBox
- *  is cropped to the glyph (the icon file's is 32x32 because a favicon needs the
- *  rounded background plate; a logo on the page does not).
+ *  The path here is character-for-character the one in app/icon.svg, and the
+ *  stroke is ember-500 in both — if either changes, change both, or the tab icon
+ *  and the logo drift apart. The viewBox is cropped to the glyph (the icon
+ *  file's is 32x32 because a favicon needs the rounded background plate; a logo
+ *  on the page does not).
  *
  *  Sized in `em` and painted with `currentColor`, so the mark tracks whatever
  *  font-size and color the caller sets and never needs a second variant. */
