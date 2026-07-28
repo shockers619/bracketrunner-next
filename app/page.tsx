@@ -47,70 +47,50 @@ function Step({ n, title, body }: { n: string; title: string; body: string }) {
   )
 }
 
-/** An editorial feature row. There is deliberately no container here — no card,
- *  no border, no fill.
+/** One feature: number, claim, body, then its artwork directly beneath.
  *
- *  The cards were the problem. Varying their radius and angle only made the
- *  boxes look unsteady rather than handmade, which is worse: a template with a
- *  tilt is still a template. What separates one claim from the next now is
- *  space and an ink rule, the way a printed spread separates sections.
+ *  The previous pass removed the cards and left nothing doing their job. Cards
+ *  were grouping — they told you which artwork belonged to which sentence. With
+ *  them gone and the artwork thrown to the opposite column, a heading sat 180 to
+ *  245px from its own graphic while unrelated features sat ~110px apart. Related
+ *  things were farther apart than unrelated things, so nothing read as a unit,
+ *  and the left/right alternation destroyed the reading path on top of that.
  *
- *  Anything still bounded below is the product's own UI — a status badge, a
- *  schedule bar. That reads as an artifact, evidence of a real thing, rather
- *  than as page furniture. That is the distinction worth keeping. */
-function Feature({ n, title, body, note, flip, rule = 0, children }: {
-  n: string; title: string; body: string; note?: string; flip?: boolean
-  rule?: number; children: React.ReactNode
+ *  So: everything in one feature stacks tight and shares a left edge, and the
+ *  space BETWEEN features is several times larger than any space inside one.
+ *  That is what makes a group read as a group without drawing a border round it.
+ *  The warm wash is deliberately sized to the whole feature, so light does the
+ *  grouping a card used to do — no edge, no radius, nothing clinical. */
+function Feature({ n, title, body, note, rule = 0, children }: {
+  n: string; title: string; body: string; note?: string; rule?: number
+  children: React.ReactNode
 }) {
   return (
-    <div className="relative grid items-center gap-9 lg:grid-cols-12 lg:gap-14">
-      {/* Once the cards came off, the ground underneath was flat black, and flat
-          black is where "cold" comes back. This is warmth with no container: a
-          soft ember wash with no edge, no radius and no border, sitting behind
-          the row on whichever side the artwork is. Light instead of a box. */}
-      <div
-        className={`mk-bloom pointer-events-none absolute top-1/2 hidden h-[24rem] w-[32rem] -translate-y-1/2 opacity-70 lg:block ${
-          flip ? 'left-[-12%]' : 'right-[-12%]'
-        }`}
-      />
+    <div className="relative">
+      <div className="mk-bloom pointer-events-none absolute -inset-x-10 -inset-y-8 opacity-50" />
 
-      {/* Placed with explicit column starts rather than `order`, so the DOM
-          stays in reading order (claim, then evidence) for screen readers and
-          for the single-column phone layout. */}
-      <div className={`lg:col-span-5 ${flip ? 'lg:col-start-8' : 'lg:col-start-1'}`}>
+      <div className="relative">
         <div className="flex items-center gap-3">
-          <span className="font-mono text-[11.5px] font-semibold tracking-[0.22em] text-copper-300/70">{n}</span>
-          <InkRule variant={rule} className="h-[8px] w-14 text-copper-400/40" />
+          <span className="font-mono text-[11px] font-semibold tracking-[0.2em] text-copper-300/75">{n}</span>
+          <InkRule variant={rule} className="h-[8px] w-12 text-copper-400/45" />
         </div>
-        <h3 className="mt-4 text-[1.4rem] font-extrabold leading-[1.22] tracking-[-0.02em] text-white sm:text-[1.58rem]">
+
+        <h3 className="mt-3 text-[1.3rem] font-extrabold leading-[1.25] tracking-[-0.02em] text-white">
           {title}
         </h3>
-        <p className="mt-3.5 max-w-md text-[15px] leading-[1.7] text-white/60">{body}</p>
+        <p className="mt-2.5 text-[14.5px] leading-[1.65] text-white/60">{body}</p>
         {note && (
           <p
-            className="mk-hand mt-4 text-[18px] leading-tight text-copper-300/75"
+            className="mk-hand mt-3 text-[17px] leading-tight text-copper-300/75"
             style={{ transform: 'rotate(-0.9deg)' }}
           >
             {note}
           </p>
         )}
-      </div>
-      <div className={`lg:col-span-6 ${flip ? 'lg:col-start-1 lg:row-start-1' : 'lg:col-start-7'}`}>
-        {children}
+
+        <div className="mt-5">{children}</div>
       </div>
     </div>
-  )
-}
-
-/** Separator between features. Partial width and alternating side, so the eye
- *  reads a rhythm instead of a stack of identical full-width dividers — which
- *  is what a table looks like. */
-function FeatureRule({ i }: { i: number }) {
-  return (
-    <InkRule
-      variant={i}
-      className={`my-12 h-[12px] w-[190px] text-copper-400/25 sm:my-14 sm:w-[240px] ${i % 2 ? 'ml-auto' : ''}`}
-    />
   )
 }
 
@@ -282,7 +262,10 @@ export default function LandingPage() {
             </span>
           </div>
 
-          <div className="mt-12 sm:mt-14">
+          {/* gap-y-16 between features against ~20px inside one. That ratio is
+              the whole mechanism: a group reads as a group when the space around
+              it is clearly bigger than the space within it. */}
+          <div className="mt-12 grid gap-x-14 gap-y-16 sm:mt-14 sm:grid-cols-2">
             <Feature
               n="01" rule={0}
               title="Every format a real weekend throws at you."
@@ -292,17 +275,13 @@ export default function LandingPage() {
               <FormatChipsGraphic />
             </Feature>
 
-            <FeatureRule i={1} />
-
             <Feature
-              n="02" rule={1} flip
+              n="02" rule={1}
               title="Courts, times, and rest — solved before you arrive."
               body="We lay every game across your courts and hours, respect the rest a team needs between games, and keep bracket rounds in the right order. If it genuinely won't fit, we tell you what to change instead of quietly running past closing time."
             >
               <CourtTimelineGraphic />
             </Feature>
-
-            <FeatureRule i={2} />
 
             <Feature
               n="03" rule={2}
@@ -313,17 +292,13 @@ export default function LandingPage() {
               <OfflineGraphic />
             </Feature>
 
-            <FeatureRule i={3} />
-
             <Feature
-              n="04" rule={0} flip
+              n="04" rule={0}
               title="Checked by a person before anyone sees it."
               body="Every event is built and verified by hand. You get a walkthrough before it goes public, and someone reachable while it runs."
             >
               <HandBuiltGraphic />
             </Feature>
-
-            <FeatureRule i={4} />
 
             <Feature
               n="05" rule={1}
@@ -333,21 +308,17 @@ export default function LandingPage() {
               <NoAdsGraphic />
             </Feature>
 
-            <FeatureRule i={5} />
-
             <Feature
-              n="06" rule={2} flip
+              n="06" rule={2}
               title="A link, not a login."
               body="Families open a URL and see the schedule. No account, no app, no password reset on a Saturday morning."
               note="no app store, ever"
             >
-              {/* The link itself, marked the way you'd underline a URL you wrote
-                  down for someone — not framed in a read-only input. */}
               <div className="relative">
-                <span className="font-mono text-[15px] text-white/80 sm:text-[17px]">
+                <span className="font-mono text-[14px] text-white/80">
                   bracketrunner.com/<span className="text-ember-400">spring-classic</span>
                 </span>
-                <Underscore className="mt-1.5 h-[11px] w-[230px] text-ember-500/75 sm:w-[270px]" />
+                <Underscore className="mt-1.5 h-[10px] w-[215px] text-ember-500/75" />
               </div>
             </Feature>
           </div>
