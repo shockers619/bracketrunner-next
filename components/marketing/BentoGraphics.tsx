@@ -23,8 +23,10 @@ export function OfflineGraphic() {
       <path d="M0 4h13m0 0-3.5-3.5M13 4l-3.5 3.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
+  // The badges are the artifact — each is real product chrome with its own
+  // border. A panel around them just added a second frame.
   return (
-    <div className="flex w-full flex-wrap items-center gap-2.5 mk-well px-4 py-4">
+    <div className="flex w-full flex-wrap items-center gap-2.5">
       {chip('Live', 'live', true)}
       {arrow}
       {chip('Offline · 1 queued', 'warn')}
