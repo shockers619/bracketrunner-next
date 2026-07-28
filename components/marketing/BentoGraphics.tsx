@@ -36,9 +36,12 @@ export function OfflineGraphic() {
 
 /** Ad slots, struck through — states the promise without a stock icon. */
 export function NoAdsGraphic() {
+  // No mk-well either — the struck-through dashed slots already say "this space
+  // is empty on purpose", and wrapping them in a panel made the absence of ads
+  // look like a component.
   return (
-    <div className="w-full mk-well p-3">
-      <div className="flex flex-col gap-2">
+    <div className="w-full max-w-sm">
+      <div className="flex flex-col gap-2.5">
         {['Banner ad', 'Sponsored'].map(label => (
           <div
             key={label}
@@ -49,7 +52,7 @@ export function NoAdsGraphic() {
           </div>
         ))}
       </div>
-      <p className="mt-2.5 text-center font-mono text-[10px] uppercase tracking-[0.14em] text-ember-500">Never shipped</p>
+      <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.14em] text-ember-500">Never shipped</p>
     </div>
   )
 }
@@ -67,8 +70,10 @@ export function CourtTimelineGraphic() {
     bracket: 'bg-copper-400/50',
     live: 'bg-ember-500/80',
   }
+  // No mk-well. The bars and their labels carry the idea on their own, and a
+  // recessed panel around them just reads as another widget on the page.
   return (
-    <div className="w-full mk-well p-4">
+    <div className="w-full">
       <div className="mb-2.5 flex justify-between font-mono text-[9px] uppercase tracking-[0.12em] text-white/30">
         <span>8:00</span><span>12:00</span><span>4:00</span>
       </div>

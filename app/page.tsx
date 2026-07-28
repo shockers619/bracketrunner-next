@@ -6,9 +6,6 @@ import ComparisonTable from '@/components/marketing/ComparisonTable'
 import {
   OfflineGraphic, NoAdsGraphic, CourtTimelineGraphic, FormatChipsGraphic, HandBuiltGraphic,
 } from '@/components/marketing/BentoGraphics'
-import {
-  FormatsIcon, OfflineIcon, NoAdsIcon, ScheduleIcon, HandBuiltIcon, LinkIcon,
-} from '@/components/marketing/BentoIcons'
 import { CircleScribble, ArrowDownLeft, ArrowDownRight, InkRule, Underscore } from '@/components/marketing/HandDrawn'
 
 export const metadata: Metadata = {
@@ -50,62 +47,70 @@ function Step({ n, title, body }: { n: string; title: string; body: string }) {
   )
 }
 
-/** Bento tile. Three things here are deliberate, and all three exist to stop the
- *  grid reading like a dashboard:
+/** An editorial feature row. There is deliberately no container here — no card,
+ *  no border, no fill.
  *
- *  - No icon chip. A rounded square holding an icon in the top-left corner is
- *    the SaaS feature-card cliché; the mark now sits bare and slightly turned.
- *  - No hairline rule. A full-width 1px line under a heading is a table header
- *    separator, and six of them stacked down a page is what made this feel like
- *    a database. It's a short ink stroke now, a different one per card.
- *  - `tilt`, `lift` and `radius` vary per card, so they aren't visibly stamped
- *    from one die. Rotation alone turned out to be nearly invisible at this card
- *    size; `lift` (a few px of translateY) is what actually breaks the strict
- *    shared baseline, which is the thing that reads as "generated grid". It's
- *    transform-only, so it shifts the card visually without moving layout.
+ *  The cards were the problem. Varying their radius and angle only made the
+ *  boxes look unsteady rather than handmade, which is worse: a template with a
+ *  tilt is still a template. What separates one claim from the next now is
+ *  space and an ink rule, the way a printed spread separates sections.
  *
- *  `note` is a handwritten margin remark. It sits in normal flow rather than
- *  absolutely positioned, so it can't collide with a neighbour at any width. */
-function Bento({ icon, title, body, wide, warm, tilt = 0, lift = 0, rule = 0, radius = '1rem', note, children }: {
-  icon: React.ReactNode; title: string; body: string
-  wide?: boolean; warm?: boolean; tilt?: number; lift?: number; rule?: number; radius?: string
-  note?: string; children: React.ReactNode
+ *  Anything still bounded below is the product's own UI — a status badge, a
+ *  schedule bar. That reads as an artifact, evidence of a real thing, rather
+ *  than as page furniture. That is the distinction worth keeping. */
+function Feature({ n, title, body, note, flip, rule = 0, children }: {
+  n: string; title: string; body: string; note?: string; flip?: boolean
+  rule?: number; children: React.ReactNode
 }) {
   return (
-    <div
-      className={`mk-card ${warm ? 'mk-card-warm' : ''} flex flex-col p-6 ${wide ? 'md:col-span-2' : ''}`}
-      style={{
-        borderRadius: radius,
-        transform: `translateY(${lift}px) rotate(${tilt}deg)`,
-      }}
-    >
-      <div className="relative flex items-start gap-3">
-        <span
-          className={`mt-[3px] shrink-0 ${warm ? 'text-ember-400' : 'text-copper-300/80'}`}
-          style={{ transform: `rotate(${-tilt * 3}deg)` }}
-        >
-          {icon}
-        </span>
-        <h3 className="text-[1.05rem] font-bold leading-snug tracking-tight text-white">{title}</h3>
-      </div>
-
-      <InkRule
-        variant={rule}
-        className={`relative mt-4 h-[10px] w-[120px] ${warm ? 'text-ember-500/60' : 'text-copper-400/40'}`}
+    <div className="relative grid items-center gap-9 lg:grid-cols-12 lg:gap-14">
+      {/* Once the cards came off, the ground underneath was flat black, and flat
+          black is where "cold" comes back. This is warmth with no container: a
+          soft ember wash with no edge, no radius and no border, sitting behind
+          the row on whichever side the artwork is. Light instead of a box. */}
+      <div
+        className={`mk-bloom pointer-events-none absolute top-1/2 hidden h-[24rem] w-[32rem] -translate-y-1/2 opacity-70 lg:block ${
+          flip ? 'left-[-12%]' : 'right-[-12%]'
+        }`}
       />
 
-      <p className="relative mt-3.5 max-w-lg text-[14.5px] leading-[1.65] text-white/60">{body}</p>
-      <div className="relative mt-6 flex flex-1 items-end">{children}</div>
-
-      {note && (
-        <p
-          className="mk-hand relative mt-5 text-[17px] leading-tight text-copper-300/70"
-          style={{ transform: 'rotate(-1.1deg)' }}
-        >
-          {note}
-        </p>
-      )}
+      {/* Placed with explicit column starts rather than `order`, so the DOM
+          stays in reading order (claim, then evidence) for screen readers and
+          for the single-column phone layout. */}
+      <div className={`lg:col-span-5 ${flip ? 'lg:col-start-8' : 'lg:col-start-1'}`}>
+        <div className="flex items-center gap-3">
+          <span className="font-mono text-[11.5px] font-semibold tracking-[0.22em] text-copper-300/70">{n}</span>
+          <InkRule variant={rule} className="h-[8px] w-14 text-copper-400/40" />
+        </div>
+        <h3 className="mt-4 text-[1.4rem] font-extrabold leading-[1.22] tracking-[-0.02em] text-white sm:text-[1.58rem]">
+          {title}
+        </h3>
+        <p className="mt-3.5 max-w-md text-[15px] leading-[1.7] text-white/60">{body}</p>
+        {note && (
+          <p
+            className="mk-hand mt-4 text-[18px] leading-tight text-copper-300/75"
+            style={{ transform: 'rotate(-0.9deg)' }}
+          >
+            {note}
+          </p>
+        )}
+      </div>
+      <div className={`lg:col-span-6 ${flip ? 'lg:col-start-1 lg:row-start-1' : 'lg:col-start-7'}`}>
+        {children}
+      </div>
     </div>
+  )
+}
+
+/** Separator between features. Partial width and alternating side, so the eye
+ *  reads a rhythm instead of a stack of identical full-width dividers — which
+ *  is what a table looks like. */
+function FeatureRule({ i }: { i: number }) {
+  return (
+    <InkRule
+      variant={i}
+      className={`my-12 h-[12px] w-[190px] text-copper-400/25 sm:my-14 sm:w-[240px] ${i % 2 ? 'ml-auto' : ''}`}
+    />
   )
 }
 
@@ -254,8 +259,10 @@ export default function LandingPage() {
       </section>
 
       {/* ---- Bento ---- */}
-      <section className="border-b border-white/[0.07] px-5 py-14 sm:px-8 sm:py-[4.5rem]">
-        <div className="mx-auto max-w-6xl">
+      {/* overflow-hidden because the per-feature blooms deliberately bleed past
+          the content column; without it they'd widen the document. */}
+      <section className="relative overflow-hidden border-b border-white/[0.07] px-5 py-14 sm:px-8 sm:py-[4.5rem]">
+        <div className="relative mx-auto max-w-6xl">
           <Eyebrow>A complete event engine</Eyebrow>
           <h2 className="mt-4 max-w-3xl text-[1.9rem] font-extrabold leading-tight tracking-[-0.03em] sm:text-[2.6rem]">
             Not a <Accent>bracket calculator.</Accent>
@@ -275,71 +282,74 @@ export default function LandingPage() {
             </span>
           </div>
 
-          <div className="mt-9 grid gap-5 md:grid-cols-3">
-            <Bento
-              wide warm tilt={-0.5} lift={0} rule={0} radius="1.15rem"
-              note="yes — even 13 teams"
-              icon={<FormatsIcon />}
+          <div className="mt-12 sm:mt-14">
+            <Feature
+              n="01" rule={0}
               title="Every format a real weekend throws at you."
               body="Showcases, round robins, pool play into bracket, single and double elimination — including the odd team counts that break other tools — plus multi-venue events and custom game guarantees."
+              note="yes — even 13 teams"
             >
               <FormatChipsGraphic />
-            </Bento>
+            </Feature>
 
-            <Bento
-              tilt={0.65} lift={-10} rule={1} radius="0.85rem"
-              icon={<NoAdsIcon />}
-              title="Zero ad clutter."
-              body="Nothing sits between a parent and their kid's game."
-            >
-              <NoAdsGraphic />
-            </Bento>
+            <FeatureRule i={1} />
 
-            <Bento
-              warm tilt={0.5} lift={9} rule={2} radius="1.25rem"
-              note="gym Wi-Fi is always bad. always."
-              icon={<OfflineIcon />}
-              title="Scores survive a dead gym Wi-Fi."
-              body="When the signal drops mid-game, scores keep saving on the device and sync themselves the moment it comes back — in the order they were entered."
-            >
-              <OfflineGraphic />
-            </Bento>
-
-            <Bento
-              wide tilt={-0.4} lift={-7} rule={1} radius="0.95rem"
-              icon={<ScheduleIcon />}
+            <Feature
+              n="02" rule={1} flip
               title="Courts, times, and rest — solved before you arrive."
               body="We lay every game across your courts and hours, respect the rest a team needs between games, and keep bracket rounds in the right order. If it genuinely won't fit, we tell you what to change instead of quietly running past closing time."
             >
               <CourtTimelineGraphic />
-            </Bento>
+            </Feature>
 
-            <Bento
-              wide tilt={0.45} lift={7} rule={2} radius="1.2rem"
-              icon={<HandBuiltIcon />}
+            <FeatureRule i={2} />
+
+            <Feature
+              n="03" rule={2}
+              title="Scores survive a dead gym Wi-Fi."
+              body="When the signal drops mid-game, scores keep saving on the device and sync themselves the moment it comes back — in the order they were entered."
+              note="gym Wi-Fi is always bad. always."
+            >
+              <OfflineGraphic />
+            </Feature>
+
+            <FeatureRule i={3} />
+
+            <Feature
+              n="04" rule={0} flip
               title="Checked by a person before anyone sees it."
               body="Every event is built and verified by hand. You get a walkthrough before it goes public, and someone reachable while it runs."
             >
               <HandBuiltGraphic />
-            </Bento>
+            </Feature>
 
-            <Bento
-              tilt={-0.65} lift={-9} rule={0} radius="0.9rem"
-              note="no app store, ever"
-              icon={<LinkIcon />}
+            <FeatureRule i={4} />
+
+            <Feature
+              n="05" rule={1}
+              title="Zero ad clutter."
+              body="Nothing sits between a parent and their kid's game. No banners, no interstitials, no sponsored rows wedged between the schedule and the score."
+            >
+              <NoAdsGraphic />
+            </Feature>
+
+            <FeatureRule i={5} />
+
+            <Feature
+              n="06" rule={2} flip
               title="A link, not a login."
               body="Families open a URL and see the schedule. No account, no app, no password reset on a Saturday morning."
+              note="no app store, ever"
             >
-              {/* Was a bordered, filled rectangle — indistinguishable from a
-                  read-only input. It's the link itself now, marked with an ink
-                  underline the way you'd underline a URL you wrote down. */}
-              <div className="relative w-full">
-                <span className="font-mono text-[13.5px] text-white/75">
+              {/* The link itself, marked the way you'd underline a URL you wrote
+                  down for someone — not framed in a read-only input. */}
+              <div className="relative">
+                <span className="font-mono text-[15px] text-white/80 sm:text-[17px]">
                   bracketrunner.com/<span className="text-ember-400">spring-classic</span>
                 </span>
-                <Underscore className="mt-1 h-[10px] w-[195px] text-ember-500/75" />
+                <Underscore className="mt-1.5 h-[11px] w-[230px] text-ember-500/75 sm:w-[270px]" />
               </div>
-            </Bento>
+            </Feature>
           </div>
         </div>
       </section>
