@@ -132,20 +132,31 @@ export default function EventPageClient({ data }: { data: EventPageData }) {
             />
           </div>
 
+          {/* type=search gets the phone's clear button; aria-label because the
+              placeholder was the only thing naming this field, and a placeholder
+              disappears the moment someone starts typing. */}
           <input
+            type="search"
+            aria-label="Search teams"
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search team..."
-            className="order-last min-w-[140px] flex-1 basis-full rounded-lg border border-white/10 bg-base-800 px-3 py-1.5 text-sm text-white placeholder:text-white/30 transition-colors focus:border-electric-500 focus:outline-none sm:order-none sm:basis-auto"
+            className="order-last min-h-[44px] min-w-[140px] flex-1 basis-full rounded-lg border border-white/10 bg-base-800 px-3 py-1.5 text-sm text-white placeholder:text-white/30 transition-colors focus:border-electric-500 focus:outline-none sm:order-none sm:basis-auto"
           />
 
+          {/* These are the primary view switchers on the page parents actually
+              open, on a phone, in a gym. They were 24px tall — well under the
+              44px tap floor. role=tab/tablist also tells a screen reader this is
+              a view switcher rather than two loose buttons. */}
           {hasBracketPhase && (
-            <div className="flex shrink-0 rounded-lg border border-white/10 bg-base-800 p-0.5">
+            <div role="tablist" aria-label="View" className="flex shrink-0 rounded-lg border border-white/10 bg-base-800 p-0.5">
               {(['schedule', 'bracket'] as const).map(v => (
                 <button
                   key={v}
+                  role="tab"
+                  aria-selected={view === v}
                   onClick={() => setView(v)}
-                  className={`rounded-md px-3 py-1 text-xs font-semibold capitalize transition-all duration-150 active:scale-95 ${
+                  className={`inline-flex min-h-[44px] items-center justify-center rounded-md px-4 text-[13px] font-semibold capitalize transition-all duration-150 active:scale-95 ${
                     view === v ? 'bg-electric-500 text-base-950' : 'text-white/60 hover:text-white'
                   }`}
                 >

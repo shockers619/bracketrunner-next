@@ -36,7 +36,7 @@ export default function DemoRequestForm() {
 
   if (status === 'sent') {
     return (
-      <div className="rounded-2xl border border-ember-500/30 bg-ember-500/[0.07] p-8 text-center">
+      <div role="status" className="rounded-2xl border border-ember-500/30 bg-ember-500/[0.07] p-8 text-center">
         <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ember-500">Request received</p>
         <h3 className="mt-3 text-2xl font-extrabold tracking-tight text-white">We&apos;ll be in touch shortly.</h3>
         <p className="mt-2 text-[15px] leading-relaxed text-white/60">
@@ -53,32 +53,42 @@ export default function DemoRequestForm() {
     // tuning the inputs made them separate. Dark container + light fields is
     // the pairing that actually reads as a form.
     <form onSubmit={submit} className="mk-form mk-form-card rounded-2xl p-6 sm:p-8">
+      {/* Every field carries an id + matching label htmlFor and an autocomplete
+          token. Both matter on a phone, which is where most of these get filled
+          in: the label becomes a large tap target that focuses the input, and
+          autocomplete lets the keyboard offer the name/email instead of making
+          someone thumb-type it. */}
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Your name" required>
-          <input required type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Jordan Reyes" />
+        <Field label="Your name" required htmlFor="dr-name">
+          <input id="dr-name" name="name" required type="text" autoComplete="name" value={name} onChange={e => setName(e.target.value)} placeholder="Jordan Reyes" />
         </Field>
-        <Field label="Email" required>
-          <input required type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@club.com" />
+        <Field label="Email" required htmlFor="dr-email">
+          <input id="dr-email" name="email" required type="email" autoComplete="email" inputMode="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@club.com" />
         </Field>
-        <Field label="Club or organization">
-          <input type="text" value={organization} onChange={e => setOrganization(e.target.value)} placeholder="Riverside Elite" />
+        <Field label="Club or organization" htmlFor="dr-org">
+          <input id="dr-org" name="organization" type="text" autoComplete="organization" value={organization} onChange={e => setOrganization(e.target.value)} placeholder="Riverside Elite" />
         </Field>
-        <Field label="Sport">
-          <input type="text" value={sport} onChange={e => setSport(e.target.value)} placeholder="Basketball" />
+        <Field label="Sport" htmlFor="dr-sport">
+          <input id="dr-sport" name="sport" type="text" value={sport} onChange={e => setSport(e.target.value)} placeholder="Basketball" />
         </Field>
       </div>
 
-      <div className="mt-4">
-        <label className="!mb-2 block text-[13px] font-semibold normal-case tracking-normal text-white/70">
+      {/* Not a <label> — these are toggle buttons, not a field, so a bare label
+          pointed at nothing. role=group + aria-labelledby gives screen readers
+          the same grouping the heading gives everyone else, and aria-pressed
+          communicates which one is on. min-h-[44px] is the phone tap target. */}
+      <div className="mt-4" role="group" aria-labelledby="dr-size-label">
+        <p id="dr-size-label" className="mb-2 text-[13px] font-semibold text-white/70">
           Typical event size
-        </label>
+        </p>
         <div className="flex flex-wrap gap-2">
           {SIZES.map(s => (
             <button
               key={s}
               type="button"
+              aria-pressed={eventSize === s}
               onClick={() => setEventSize(s === eventSize ? '' : s)}
-              className={`rounded-full border px-3.5 py-2 text-[13px] font-semibold transition-colors ${
+              className={`inline-flex min-h-[44px] items-center rounded-full border px-4 text-[13px] font-semibold transition-colors ${
                 eventSize === s
                   ? 'border-ember-500/50 bg-ember-500/15 text-ember-400'
                   : 'border-white/10 bg-white/[0.04] text-white/60 hover:text-white'
@@ -91,8 +101,10 @@ export default function DemoRequestForm() {
       </div>
 
       <div className="mt-4">
-        <Field label="Anything we should know?">
+        <Field label="Anything we should know?" htmlFor="dr-message">
           <textarea
+            id="dr-message"
+            name="message"
             rows={3}
             value={message}
             onChange={e => setMessage(e.target.value)}
@@ -102,7 +114,7 @@ export default function DemoRequestForm() {
       </div>
 
       {error && (
-        <p className="mt-4 rounded-lg border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-300">{error}</p>
+        <p role="alert" className="mt-4 rounded-lg border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-300">{error}</p>
       )}
 
       <button
@@ -118,11 +130,16 @@ export default function DemoRequestForm() {
   )
 }
 
-function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+function Field({ label, required, children, htmlFor }: {
+  label: string; required?: boolean; children: React.ReactNode; htmlFor: string
+}) {
   return (
     <div>
-      <label className="!mb-2 block text-[13px] font-semibold normal-case tracking-normal text-white/70">
-        {label}{required && <span className="text-ember-500"> *</span>}
+      <label
+        htmlFor={htmlFor}
+        className="!mb-2 block cursor-pointer text-[13px] font-semibold normal-case tracking-normal text-white/70"
+      >
+        {label}{required && <span className="text-ember-500" aria-hidden="true"> *</span>}
       </label>
       {children}
     </div>

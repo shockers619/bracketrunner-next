@@ -291,6 +291,8 @@ button:active { transform: scale(0.98); }
   background: rgba(255, 255, 255, 0.14) !important;
   border: 1px solid rgba(255, 255, 255, 0.55) !important;
   color: #FFFFFF !important;
+  /* 44px is the phone tap-target floor; these were landing at 43. */
+  min-height: 44px;
   transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 

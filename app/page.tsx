@@ -80,10 +80,11 @@ export default function LandingPage() {
             Bracket<span className="text-ember-500">Runner</span>
           </span>
           <div className="flex shrink-0 items-center gap-1 sm:gap-3">
-            <a href="/signin" className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-semibold text-white/60 transition-colors hover:text-white">
+            {/* min-h-[44px] on both: these were 36px, under the phone tap floor. */}
+            <a href="/signin" className="inline-flex min-h-[44px] items-center whitespace-nowrap rounded-lg px-3 text-sm font-semibold text-white/60 transition-colors hover:text-white">
               Sign in
             </a>
-            <a href="#demo" className="mk-glow whitespace-nowrap rounded-lg bg-ember-500 px-4 py-2 text-[13px] font-bold text-obsidian-950 transition-transform hover:-translate-y-px sm:text-sm">
+            <a href="#demo" className="mk-glow inline-flex min-h-[44px] items-center whitespace-nowrap rounded-lg bg-ember-500 px-4 text-[13px] font-bold text-obsidian-950 transition-transform hover:-translate-y-px sm:text-sm">
               Talk to us
             </a>
           </div>
@@ -307,7 +308,7 @@ export default function LandingPage() {
             Bracket<span className="text-ember-500">Runner</span>
           </span>
           <p className="text-sm text-white/35">Event schedules, live scores, and brackets — handcrafted.</p>
-          <a href="/signin" className="text-sm font-semibold text-white/55 transition-colors hover:text-white">
+          <a href="/signin" className="-mx-2 inline-flex min-h-[44px] items-center px-2 text-sm font-semibold text-white/55 transition-colors hover:text-white">
             Director sign in →
           </a>
         </div>

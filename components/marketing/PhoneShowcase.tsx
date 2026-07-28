@@ -153,13 +153,15 @@ export default function PhoneShowcase() {
       <div className="mk-bloom pointer-events-none absolute left-1/2 top-1/2 h-[24rem] w-[38rem] -translate-x-1/2 -translate-y-1/2" />
 
       {/* Overlapped and tilted rather than sitting side by side in a neat row.
-          The bracket sits behind and above; the phone overlaps it in front. */}
-      <div className="relative flex justify-center pb-10 pt-6 lg:block lg:h-[30rem]">
-        <div className="hidden lg:absolute lg:right-0 lg:top-0 lg:block lg:w-[22rem] lg:rotate-[3deg]">
-          <BracketPanel />
-          <Caption>What you run</Caption>
-        </div>
+          The bracket sits behind and above; the phone overlaps it in front.
 
+          On mobile they stack instead, phone first. The bracket used to be
+          hidden below lg, which meant phone visitors — most of them — never saw
+          the director-side view at all, and "What families see" sat there as
+          half of a comparison whose other half was missing. It's scaled rather
+          than re-laid-out because its inner cards are fixed-width and total
+          ~344px, a few pixels past what a 375px screen leaves after padding. */}
+      <div className="relative flex flex-col items-center gap-10 pb-10 pt-6 lg:block lg:h-[30rem] lg:gap-0">
         <div className="relative z-10 -rotate-[4deg] lg:absolute lg:left-0 lg:top-16">
           <Phone />
           <Caption>What families see</Caption>
@@ -174,6 +176,11 @@ export default function PhoneShowcase() {
             </span>
             <ArrowDownRight className="ml-auto mr-2 mt-1 -scale-y-100 rotate-[12deg] text-copper-400/70" />
           </div>
+        </div>
+
+        <div className="w-full max-w-[22rem] rotate-[2deg] scale-[0.92] lg:absolute lg:right-0 lg:top-0 lg:w-[22rem] lg:rotate-[3deg] lg:scale-100">
+          <BracketPanel />
+          <Caption>What you run</Caption>
         </div>
       </div>
     </div>

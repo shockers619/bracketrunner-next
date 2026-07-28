@@ -87,6 +87,8 @@ export default function Select({
         type="button"
         disabled={disabled}
         onClick={() => setOpen(o => !o)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
         style={{
           width: '100%',
           display: 'flex',
@@ -94,6 +96,8 @@ export default function Select({
           justifyContent: 'space-between',
           gap: '8px',
           padding: '10px 12px',
+          // 44px phone tap floor; the padding alone landed this at 42.
+          minHeight: '44px',
           fontSize: '13px',
           textAlign: 'left',
           borderRadius: '8px',

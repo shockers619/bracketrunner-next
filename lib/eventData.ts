@@ -80,6 +80,20 @@ function getClient() {
   return createClient(url, anonKey)
 }
 
+/** Just enough to build the link preview, without paying for the full page
+ *  payload. `generateMetadata` and the page render are separate passes, so this
+ *  deliberately selects only the columns the preview card uses. */
+export async function getEventMeta(slug: string): Promise<EventRecord | null> {
+  const supabase = getClient()
+  if (!supabase) return null
+  const { data } = await supabase
+    .from('events')
+    .select('id, title, slug, sport, start_date, end_date')
+    .eq('slug', slug)
+    .single()
+  return (data as EventRecord) || null
+}
+
 export async function getEventPageData(slug: string): Promise<EventPageData | null> {
   const supabase = getClient()
   if (!supabase) return null
