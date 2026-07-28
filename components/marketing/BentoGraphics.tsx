@@ -2,6 +2,8 @@
 // mechanism rather than a generic icon — the offline badge really does read
 // "Offline · 1 queued", and the timeline really is how games land on courts.
 
+import { InkTick } from './HandDrawn'
+
 /** The connection badge moving through its three real states. */
 export function OfflineGraphic() {
   const chip = (label: string, tone: 'live' | 'warn', dim?: boolean) => (
@@ -101,12 +103,21 @@ export function FormatChipsGraphic() {
     'Showcase', 'Round robin', 'Pool → bracket', 'Single elim',
     'Double elim', '3-game guarantee', 'Multi-venue', 'Odd team counts',
   ]
+  // Uniform pills in a neat row read as filter chips — dashboard furniture.
+  // Each one gets its own small rotation and corner radius so the row looks
+  // like labels someone wrote out, not a control. The variation is derived from
+  // the index rather than randomised: this renders on the server, and a random
+  // value would produce a hydration mismatch.
+  const tilts = [-1.1, 0.8, -0.5, 1.2, -0.9, 0.4, -1.3, 0.7]
+  const radii = ['999px', '10px', '999px', '12px', '999px', '9px', '999px', '11px']
+
   return (
-    <div className="flex w-full flex-wrap gap-2">
-      {formats.map(f => (
+    <div className="flex w-full flex-wrap items-center gap-x-2 gap-y-2.5">
+      {formats.map((f, i) => (
         <span
           key={f}
-          className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[12px] font-medium text-white/65"
+          style={{ transform: `rotate(${tilts[i % tilts.length]}deg)`, borderRadius: radii[i % radii.length] }}
+          className="border border-copper-400/25 bg-white/[0.05] px-3 py-1.5 text-[12px] font-medium text-white/70"
         >
           {f}
         </span>
@@ -118,21 +129,28 @@ export function FormatChipsGraphic() {
 /** What we verify before an event goes live — the "done for you" checklist. */
 export function HandBuiltGraphic() {
   const items = ['Divisions & seeding', 'Pools and brackets', 'Court assignments', 'Rest between games']
+  // Was a bordered well containing circled tick glyphs and a border-t divider —
+  // three separate pieces of form chrome inside a card that claims the work is
+  // done by hand. The box and the divider are gone, the ticks are pen strokes,
+  // and the closing line is handwriting rather than italics.
+  const tilts = [-1.4, 0.9, -0.7, 1.1]
   return (
-    <div className="w-full mk-well p-4">
-      <div className="flex flex-col gap-2.5">
-        {items.map(i => (
-          <div key={i} className="flex items-center gap-2.5">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="shrink-0 text-copper-300" aria-hidden="true">
-              <circle cx="7" cy="7" r="6.25" stroke="currentColor" strokeWidth="1" opacity="0.45" />
-              <path d="M4 7.2 6.1 9.3 10 5.2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            <span className="text-[13px] text-white/60">{i}</span>
+    <div className="w-full">
+      <div className="flex flex-col gap-3">
+        {items.map((i, idx) => (
+          <div key={i} className="flex items-center gap-3">
+            <InkTick variant={idx} className="shrink-0 text-copper-300/85" />
+            <span
+              className="text-[13.5px] text-white/60"
+              style={{ transform: `rotate(${tilts[idx % tilts.length] * 0.15}deg)` }}
+            >
+              {i}
+            </span>
           </div>
         ))}
       </div>
-      <p className="mt-3 border-t border-white/[0.07] pt-3 text-[12px] italic text-copper-300/80">
-        Checked by us, by hand, before anyone sees it.
+      <p className="mk-hand mt-4 text-[16px] leading-tight text-copper-300/70" style={{ transform: 'rotate(-0.7deg)' }}>
+        checked by us, by hand, before anyone sees it
       </p>
     </div>
   )

@@ -9,7 +9,7 @@ import {
 import {
   FormatsIcon, OfflineIcon, NoAdsIcon, ScheduleIcon, HandBuiltIcon, LinkIcon,
 } from '@/components/marketing/BentoIcons'
-import { CircleScribble, ArrowDownLeft, ArrowDownRight } from '@/components/marketing/HandDrawn'
+import { CircleScribble, ArrowDownLeft, ArrowDownRight, InkRule, Underscore } from '@/components/marketing/HandDrawn'
 
 export const metadata: Metadata = {
   title: 'BracketRunner — Flawless event schedules & live scores, handcrafted for you',
@@ -50,23 +50,61 @@ function Step({ n, title, body }: { n: string; title: string; body: string }) {
   )
 }
 
-/** Bento tile with a structured header: icon chip, title, and a hairline rule
- *  separating the header from the body. `wide` spans two columns and `warm`
- *  takes the ember surface, so the grid has varied weight instead of being a
- *  row of identical boxes. */
-function Bento({ icon, title, body, wide, warm, children }: {
+/** Bento tile. Three things here are deliberate, and all three exist to stop the
+ *  grid reading like a dashboard:
+ *
+ *  - No icon chip. A rounded square holding an icon in the top-left corner is
+ *    the SaaS feature-card cliché; the mark now sits bare and slightly turned.
+ *  - No hairline rule. A full-width 1px line under a heading is a table header
+ *    separator, and six of them stacked down a page is what made this feel like
+ *    a database. It's a short ink stroke now, a different one per card.
+ *  - `tilt`, `lift` and `radius` vary per card, so they aren't visibly stamped
+ *    from one die. Rotation alone turned out to be nearly invisible at this card
+ *    size; `lift` (a few px of translateY) is what actually breaks the strict
+ *    shared baseline, which is the thing that reads as "generated grid". It's
+ *    transform-only, so it shifts the card visually without moving layout.
+ *
+ *  `note` is a handwritten margin remark. It sits in normal flow rather than
+ *  absolutely positioned, so it can't collide with a neighbour at any width. */
+function Bento({ icon, title, body, wide, warm, tilt = 0, lift = 0, rule = 0, radius = '1rem', note, children }: {
   icon: React.ReactNode; title: string; body: string
-  wide?: boolean; warm?: boolean; children: React.ReactNode
+  wide?: boolean; warm?: boolean; tilt?: number; lift?: number; rule?: number; radius?: string
+  note?: string; children: React.ReactNode
 }) {
   return (
-    <div className={`mk-card ${warm ? 'mk-card-warm' : ''} flex flex-col rounded-2xl p-6 ${wide ? 'md:col-span-2' : ''}`}>
-      <div className="relative flex items-center gap-3.5">
-        <span className="mk-icon">{icon}</span>
+    <div
+      className={`mk-card ${warm ? 'mk-card-warm' : ''} flex flex-col p-6 ${wide ? 'md:col-span-2' : ''}`}
+      style={{
+        borderRadius: radius,
+        transform: `translateY(${lift}px) rotate(${tilt}deg)`,
+      }}
+    >
+      <div className="relative flex items-start gap-3">
+        <span
+          className={`mt-[3px] shrink-0 ${warm ? 'text-ember-400' : 'text-copper-300/80'}`}
+          style={{ transform: `rotate(${-tilt * 3}deg)` }}
+        >
+          {icon}
+        </span>
         <h3 className="text-[1.05rem] font-bold leading-snug tracking-tight text-white">{title}</h3>
       </div>
-      <div className={`relative mt-5 h-px w-full ${warm ? 'bg-ember-500/25' : 'bg-white/[0.09]'}`} />
-      <p className="relative mt-4 max-w-lg text-[14.5px] leading-[1.65] text-white/60">{body}</p>
+
+      <InkRule
+        variant={rule}
+        className={`relative mt-4 h-[10px] w-[120px] ${warm ? 'text-ember-500/60' : 'text-copper-400/40'}`}
+      />
+
+      <p className="relative mt-3.5 max-w-lg text-[14.5px] leading-[1.65] text-white/60">{body}</p>
       <div className="relative mt-6 flex flex-1 items-end">{children}</div>
+
+      {note && (
+        <p
+          className="mk-hand relative mt-5 text-[17px] leading-tight text-copper-300/70"
+          style={{ transform: 'rotate(-1.1deg)' }}
+        >
+          {note}
+        </p>
+      )}
     </div>
   )
 }
@@ -223,9 +261,24 @@ export default function LandingPage() {
             Not a <Accent>bracket calculator.</Accent>
           </h2>
 
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
+          {/* The section made six product claims with no human mark anywhere in
+              it, which is where the handcrafted story was quietly dropping out.
+              Every card below describes something that exists today, so the note
+              is a claim we can stand behind rather than decoration. */}
+          <div className="mt-5 flex items-start gap-3">
+            <ArrowDownRight className="mt-1 hidden h-9 w-11 shrink-0 -scale-y-100 rotate-[10deg] text-copper-400/55 sm:block" />
+            <span
+              className="mk-hand text-[18px] leading-tight text-copper-300/75 sm:text-[19px]"
+              style={{ transform: 'rotate(-0.8deg)' }}
+            >
+              no roadmap items on this page
+            </span>
+          </div>
+
+          <div className="mt-9 grid gap-5 md:grid-cols-3">
             <Bento
-              wide warm
+              wide warm tilt={-0.5} lift={0} rule={0} radius="1.15rem"
+              note="yes — even 13 teams"
               icon={<FormatsIcon />}
               title="Every format a real weekend throws at you."
               body="Showcases, round robins, pool play into bracket, single and double elimination — including the odd team counts that break other tools — plus multi-venue events and custom game guarantees."
@@ -234,6 +287,7 @@ export default function LandingPage() {
             </Bento>
 
             <Bento
+              tilt={0.65} lift={-10} rule={1} radius="0.85rem"
               icon={<NoAdsIcon />}
               title="Zero ad clutter."
               body="Nothing sits between a parent and their kid's game."
@@ -242,7 +296,8 @@ export default function LandingPage() {
             </Bento>
 
             <Bento
-              warm
+              warm tilt={0.5} lift={9} rule={2} radius="1.25rem"
+              note="gym Wi-Fi is always bad. always."
               icon={<OfflineIcon />}
               title="Scores survive a dead gym Wi-Fi."
               body="When the signal drops mid-game, scores keep saving on the device and sync themselves the moment it comes back — in the order they were entered."
@@ -251,7 +306,7 @@ export default function LandingPage() {
             </Bento>
 
             <Bento
-              wide
+              wide tilt={-0.4} lift={-7} rule={1} radius="0.95rem"
               icon={<ScheduleIcon />}
               title="Courts, times, and rest — solved before you arrive."
               body="We lay every game across your courts and hours, respect the rest a team needs between games, and keep bracket rounds in the right order. If it genuinely won't fit, we tell you what to change instead of quietly running past closing time."
@@ -260,7 +315,7 @@ export default function LandingPage() {
             </Bento>
 
             <Bento
-              wide
+              wide tilt={0.45} lift={7} rule={2} radius="1.2rem"
               icon={<HandBuiltIcon />}
               title="Checked by a person before anyone sees it."
               body="Every event is built and verified by hand. You get a walkthrough before it goes public, and someone reachable while it runs."
@@ -269,12 +324,20 @@ export default function LandingPage() {
             </Bento>
 
             <Bento
+              tilt={-0.65} lift={-9} rule={0} radius="0.9rem"
+              note="no app store, ever"
               icon={<LinkIcon />}
               title="A link, not a login."
               body="Families open a URL and see the schedule. No account, no app, no password reset on a Saturday morning."
             >
-              <div className="w-full rounded-xl border border-white/10 bg-obsidian-950/70 px-4 py-3.5 font-mono text-[13px] text-white/70">
-                bracketrunner.com/<span className="text-ember-400">spring-classic</span>
+              {/* Was a bordered, filled rectangle — indistinguishable from a
+                  read-only input. It's the link itself now, marked with an ink
+                  underline the way you'd underline a URL you wrote down. */}
+              <div className="relative w-full">
+                <span className="font-mono text-[13.5px] text-white/75">
+                  bracketrunner.com/<span className="text-ember-400">spring-classic</span>
+                </span>
+                <Underscore className="mt-1 h-[10px] w-[195px] text-ember-500/75" />
               </div>
             </Bento>
           </div>
