@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import Wordmark from '@/components/Wordmark'
 import { ensureTenantForUser, NeedsOrgNameError } from '@/lib/tenant'
 
 export default function SignInPage() {
@@ -43,6 +44,11 @@ export default function SignInPage() {
 
   return (
     <div style={{ maxWidth: '440px', margin: '80px auto', padding: '0 24px' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
+        <a href="/" aria-label="BracketRunner home">
+          <Wordmark className="text-[19px] font-extrabold tracking-tight" />
+        </a>
+      </div>
       <div className="card">
         <h1 style={{ fontSize: '22px', marginBottom: '4px' }}>Sign in</h1>
         <p className="helper-text" style={{ marginBottom: '24px' }}>Welcome back to BracketRunner.</p>
