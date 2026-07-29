@@ -100,10 +100,11 @@ export default function LandingPage() {
       {/* ---- Nav ---- */}
       <header className="sticky top-0 z-30 border-b border-white/[0.07] bg-obsidian-950/85 backdrop-blur-xl">
         <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
-          {/* The bracket marks add ~35px to the lockup, which pushed the nav
-              actions into the right padding at 375px. Stepping down one size on
-              small screens keeps the full logo rather than dropping a mark. */}
-          <Wordmark className="text-[15px] font-extrabold tracking-tight sm:text-[17px]" />
+          {/* The logo is 8.16:1, so height drives width: 26px tall is ~212px
+              wide, which does not fit beside both nav actions on a 375px screen.
+              18px on small screens keeps the whole lockup rather than cropping
+              it or dropping the nav. */}
+          <Wordmark className="h-[18px] sm:h-[26px]" />
           <div className="flex shrink-0 items-center gap-1 sm:gap-3">
             {/* min-h-[44px] on both: these were 36px, under the phone tap floor. */}
             <a href="/signin" className="inline-flex min-h-[44px] items-center whitespace-nowrap rounded-lg px-3 text-sm font-semibold text-white/60 transition-colors hover:text-white">
@@ -350,7 +351,7 @@ export default function LandingPage() {
       {/* ---- Footer ---- */}
       <footer className="border-t border-white/[0.07] px-5 py-10 sm:px-8">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4">
-          <Wordmark className="text-[15px] font-extrabold tracking-tight" />
+          <Wordmark className="h-[22px]" />
           <p className="text-sm text-white/35">Event schedules, live scores, and brackets — handcrafted.</p>
           <a href="/signin" className="-mx-2 inline-flex min-h-[44px] items-center px-2 text-sm font-semibold text-white/55 transition-colors hover:text-white">
             Director sign in →

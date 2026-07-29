@@ -1,43 +1,34 @@
-/** The brand lockup: the favicon's bracket glyph, the wordmark, then the same
- *  glyph mirrored. Both marks' stems point inward at the name.
+/** The brand lockup, rendered from supplied artwork.
  *
- *  The path here is character-for-character the one in app/icon.svg, and the
- *  stroke is ember-500 in both — if either changes, change both, or the tab icon
- *  and the logo drift apart. The viewBox is cropped to the glyph (the icon
- *  file's is 32x32 because a favicon needs the rounded background plate; a logo
- *  on the page does not).
+ *  The source file was 1983x793 with a solid black background and no alpha —
+ *  80% of it dead space, and dropping it straight onto the page would have shown
+ *  a black rectangle against the #0B0A0F ground. The asset in public/brand is
+ *  cropped to the artwork and converted to real transparency: the logo is
+ *  glow-on-black, i.e. purely additive, so max(r,g,b) is the coverage and the
+ *  colour is unpremultiplied back out. It composites correctly over any
+ *  background rather than only over black.
  *
- *  Sized in `em` and painted with `currentColor`, so the mark tracks whatever
- *  font-size and color the caller sets and never needs a second variant. */
+ *  Sized by height — callers pass an `h-*` class and the width follows from the
+ *  8.16:1 aspect. The width/height attributes are the intrinsic pixel size, kept
+ *  so the browser reserves the right box before the image loads instead of
+ *  reflowing the header.
+ *
+ *  To swap in a new logo later: replace public/brand/bracketrunner-logo.png and,
+ *  if the proportions change, update LOGO_W/LOGO_H here. app/icon.svg (the tab
+ *  icon) is separate and drawn by hand — update it too if the mark changes. */
 
-function BracketMark({ flip = false }: { flip?: boolean }) {
-  return (
-    <svg
-      viewBox="5.5 8 21 16"
-      aria-hidden="true"
-      focusable="false"
-      className="h-[0.78em] w-auto shrink-0 text-ember-500"
-      style={flip ? { transform: 'scaleX(-1)' } : undefined}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M7 9.5h5.5v13H7" />
-      <path d="M12.5 16H25" />
-    </svg>
-  )
-}
+const LOGO_W = 800
+const LOGO_H = 98
 
 export default function Wordmark({ className = '' }: { className?: string }) {
   return (
-    <span className={`inline-flex items-center gap-[0.36em] ${className}`}>
-      <BracketMark />
-      <span>
-        Bracket<span className="text-ember-500">Runner</span>
-      </span>
-      <BracketMark flip />
-    </span>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/brand/bracketrunner-logo.png"
+      alt="BracketRunner"
+      width={LOGO_W}
+      height={LOGO_H}
+      className={`w-auto shrink-0 select-none ${className}`}
+    />
   )
 }
