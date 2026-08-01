@@ -99,22 +99,27 @@ export default function LandingPage() {
     <div className="mk-paper min-h-screen bg-obsidian-950 text-white antialiased">
       {/* ---- Nav ---- */}
       <header className="sticky top-0 z-30 border-b border-white/[0.07] bg-obsidian-950/85 backdrop-blur-xl">
-        <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
-          {/* 36px is the largest size that is free: the nav actions are
-              min-h-[44px], so the row height is max(logo, 44) and the header
+        <nav className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-5 py-4 sm:gap-4 sm:px-8">
+          {/* 36px from sm up is the largest size that is free: the nav actions
+              are min-h-[44px], so the row height is max(logo, 44) and the header
               does not grow at all until the logo passes 44px. At 8.08:1 that is
               291px wide against 1152px of content — confident, not shouting.
 
-              On a phone the logo is 210px of a 335px row, so "Sign in" is hidden
-              below sm to make room. It is still reachable: the footer carries
-              "Director sign in →", and the primary CTA stays in the header. */}
-          <Wordmark className="h-[26px] sm:h-[36px]" />
+              Below sm the logo is sized against the viewport instead of pinned
+              to one value, because "as large as possible with Sign in visible"
+              is a different number on every phone. Space left for it is
+              (100vw - 40px padding - 150px actions - 8px gap), and at 8.08:1
+              that works out to ~12vw - 25px, floored at 14px for a 320px screen
+              and capped at 26px. Every width keeps 9-22px of slack, and the mark
+              grows on a larger phone rather than staying small for all of them.
+              Both nav buttons keep their 44px tap height throughout. */}
+          <Wordmark className="h-[clamp(14px,12vw_-_25px,26px)] sm:h-[36px]" />
           <div className="flex shrink-0 items-center gap-1 sm:gap-3">
             {/* min-h-[44px] on both: these were 36px, under the phone tap floor. */}
-            <a href="/signin" className="hidden min-h-[44px] items-center whitespace-nowrap rounded-lg px-3 text-sm font-semibold text-white/60 transition-colors hover:text-white sm:inline-flex">
+            <a href="/signin" className="inline-flex min-h-[44px] items-center whitespace-nowrap rounded-lg px-2 text-sm font-semibold text-white/60 transition-colors hover:text-white sm:px-3">
               Sign in
             </a>
-            <a href="#demo" className="mk-glow inline-flex min-h-[44px] items-center whitespace-nowrap rounded-lg bg-ember-500 px-4 text-[13px] font-bold text-obsidian-950 transition-transform hover:-translate-y-px sm:text-sm">
+            <a href="#demo" className="mk-glow inline-flex min-h-[44px] items-center whitespace-nowrap rounded-lg bg-ember-500 px-3 text-[13px] font-bold sm:px-4 text-obsidian-950 transition-transform hover:-translate-y-px sm:text-sm">
               Talk to us
             </a>
           </div>
