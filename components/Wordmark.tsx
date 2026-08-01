@@ -9,7 +9,7 @@
  *  background rather than only over black.
  *
  *  Sized by height — callers pass an `h-*` class and the width follows from the
- *  8.16:1 aspect. The width/height attributes are the intrinsic pixel size, kept
+ *  8.08:1 aspect. The width/height attributes are the intrinsic pixel size, kept
  *  so the browser reserves the right box before the image loads instead of
  *  reflowing the header.
  *
@@ -18,7 +18,7 @@
  *  icon) is separate and drawn by hand — update it too if the mark changes. */
 
 const LOGO_W = 800
-const LOGO_H = 98
+const LOGO_H = 99
 
 export default function Wordmark({ className = '' }: { className?: string }) {
   return (
