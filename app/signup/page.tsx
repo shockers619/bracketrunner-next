@@ -71,7 +71,7 @@ export default function SignUpPage() {
     <div style={{ maxWidth: '440px', margin: '80px auto', padding: '0 24px' }}>
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
         <a href="/" aria-label="BracketRunner home">
-          <Wordmark className="h-[26px]" />
+          <Wordmark className="h-[34px]" />
         </a>
       </div>
       <div className="card">
